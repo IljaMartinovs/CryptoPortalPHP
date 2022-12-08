@@ -19,9 +19,4 @@ class CryptoCollection
     {
         $this->cryptos = array_merge($this->cryptos, $cryptos);
     }
-
-    public function getCryptos(): array
-    {
-        return $this->cryptos;
-    }
 }

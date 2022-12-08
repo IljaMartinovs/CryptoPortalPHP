@@ -13,7 +13,7 @@ class CryptoApiCryptoRepository implements CryptoRepository
         $cryptoResponse = (new CryptoDataService())->getCrypto(1,12);
         $cryptos = new CryptoCollection();
 
-        foreach ($cryptoResponse['data'] as $row) {
+        foreach ($cryptoResponse as $row) {
             $cryptos->addCrypto(new Crypto(
                 $row['name'],
                 $row['symbol'],
