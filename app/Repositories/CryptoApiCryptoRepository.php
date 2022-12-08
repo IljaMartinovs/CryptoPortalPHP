@@ -8,19 +8,18 @@ use App\Services\CryptoDataService;
 
 class CryptoApiCryptoRepository implements CryptoRepository
 {
-    public function getCrypto(string $start, string $limit, string $convert = 'USD'): CryptoCollection
+    public function getCrypto(): CryptoCollection
     {
-        $cryptoResponse = (new CryptoDataService())->getCrypto(1,12);
+        $cryptoResponse = (new CryptoDataService())->getCrypto();
         $cryptos = new CryptoCollection();
 
-        foreach ($cryptoResponse as $row) {
+        foreach ($cryptoResponse->data as $coin) {
             $cryptos->addCrypto(new Crypto(
-                $row['name'],
-                $row['symbol'],
-                $row['quote']['USD']['price'],
-                $row['quote']['USD']['percent_change_24h']
+                $coin->name,
+                $coin->symbol,
+                $coin->quote->USD->price,
+                $coin->quote->USD->percent_change_24h
             ));
-
         }
         return $cryptos;
     }

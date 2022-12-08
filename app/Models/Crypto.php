@@ -9,7 +9,7 @@ class Crypto
     private string $price;
     private string $change;
 
-    public function __construct(string $name, string $symbol, string $price, string $change)
+    public function __construct(string $name, string $symbol, float $price, float $change)
     {
         $this->name = $name;
         $this->symbol = $symbol;

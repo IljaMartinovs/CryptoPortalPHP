@@ -1,18 +1,13 @@
 <?php
 
 require_once "vendor/autoload.php";
+
 session_start();
 
 use App\Template;
-use Twig\Loader\FilesystemLoader;
-use Twig\Environment;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
-
-//$loader = new FilesystemLoader('public/views');
-//$twig = new Environment($loader);
-//$twig->addGlobal('session', $_SESSION);
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $route) {
     $route->addRoute('GET', '/', ['App\Controllers\CryptoController', 'index']);

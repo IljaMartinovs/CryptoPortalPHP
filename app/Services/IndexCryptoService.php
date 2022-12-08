@@ -17,6 +17,6 @@ class IndexCryptoService
 
     public function execute(): CryptoCollection
     {
-        return $this->cryptoRepository->getCrypto(1, 12);
+        return $this->cryptoRepository->getCrypto();
     }
 }

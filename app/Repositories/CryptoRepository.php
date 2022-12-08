@@ -6,5 +6,5 @@ use App\CryptoCollection;
 
 interface CryptoRepository
 {
-    public function getCrypto(string $start, string $limit, string $convert = 'USD'): CryptoCollection;
+    public function getCrypto(): CryptoCollection;
 }

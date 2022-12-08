@@ -4,12 +4,14 @@ namespace App\Services;
 
 class CryptoDataService
 {
-    public function getCrypto(string $start, string $limit, string $convert = 'USD'): array
+    private $results;
+
+    public function __construct()
     {
         $parameters = [
-            'start' => $start,
-            'limit' => $limit,
-            'convert' => $convert
+            'start' => '1',
+            'limit' => '10',
+            'convert' => 'USD'
         ];
 
         $headers = [
@@ -27,9 +29,12 @@ class CryptoDataService
             CURLOPT_RETURNTRANSFER => 1
         ));
 
-        $response = curl_exec($curl);
-        $data = json_decode($response, true);
+        $this->results = json_decode(curl_exec($curl));
         curl_close($curl);
-        return $data['data'];
+    }
+
+    public function getCrypto(): object
+    {
+        return $this->results;
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Database;
 use App\Validation;
 
 class LoginService
