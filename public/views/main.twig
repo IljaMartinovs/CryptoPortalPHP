@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>News</title>
+</head>
+<body>
+{% if session.name is defined %}
+    <div class="text-center">
+        <img
+                src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
+                class="rounded-full w-32 mb-4 mx-auto"
+                alt="Avatar"
+        />
+        <h5 class="text-xl font-medium leading-tight mb-2">
+            <a href="/profile">{{ session.name }}</a>
+        </h5>
+    </div>
+{% else %}
+    <div class="flex justify-center">
+        <button class="text-pink-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                type="button"
+        >
+            <a href="/login">Login</a></li>
+        </button>
+        <button class="text-pink-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                type="button"
+        >
+            <a href="/registration">Registration</a></li>
+        </button>
+    </div>
+{% endif %}
+
+<div class="flex justify-center">
+
+    <div class="md:px-4 md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 space-y-4 md:space-y-0">
+        {% for crypto in crypto.cryptos %}
+            <div class="max-w-sm bg-white px-6 pt-6 pb-2 rounded-xl shadow-lg transform hover:scale-105 transition duration-500">
+                <h3 class="mb-3 text-xl font-bold text-indigo-600">{{ crypto.name }} ({{ crypto.symbol }})</h3>
+                <h3 class="mb-3 text-xl font-bold text-indigo-600">{{ crypto.price }}</h3>
+                <h1 class="mt-4 text-gray-800 text-2xl font-bold cursor-pointer">{{ crypto.change }} %</h1>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
