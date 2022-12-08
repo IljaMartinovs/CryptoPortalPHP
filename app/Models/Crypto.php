@@ -7,14 +7,14 @@ class Crypto
     private string $name;
     private string $symbol;
     private string $price;
-    private string $change;
+    private string $profit;
 
-    public function __construct(string $name, string $symbol, float $price, float $change)
+    public function __construct(string $name, string $symbol, float $price, float $profit)
     {
         $this->name = $name;
         $this->symbol = $symbol;
         $this->price = $price;
-        $this->change = $change;
+        $this->profit = $profit;
     }
 
     public function getName(): string
@@ -32,8 +32,8 @@ class Crypto
         return $this->price;
     }
 
-    public function getChange(): string
+    public function getProfit(): string
     {
-        return $this->change;
+        return $this->profit;
     }
 }
