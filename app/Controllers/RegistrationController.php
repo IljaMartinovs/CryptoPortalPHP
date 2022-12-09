@@ -2,10 +2,11 @@
 
 namespace App\Controllers;
 
-use App\Database;
+use App\Redirect;
 use App\Services\RegistrationService;
 use App\Services\RegistrationServiceRequest;
 use App\Template;
+use App\Validation;
 
 class RegistrationController
 {
@@ -16,14 +17,20 @@ class RegistrationController
 
     public function store()
     {
-        $registrationService = new RegistrationService();
-        $registrationService->execute(
+        $validation = new Validation();
+        $validation->validate();
+        if ($validation->validationFailed()) {
+            return new Redirect('/registration');
+        }
+
+        $registerService = new RegistrationService();
+        $registerService->execute(
             new RegistrationServiceRequest(
                 $_POST['name'],
                 $_POST['email'],
-                $_POST['password'],
-                $_POST['confirm-password']
+                $_POST['password']
             )
         );
+        return new Redirect('/');
     }
 }

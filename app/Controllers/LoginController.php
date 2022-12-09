@@ -2,9 +2,10 @@
 
 namespace App\Controllers;
 
-use App\Services\LoginService;
-use App\Services\LoginServiceRequest;
+use App\Redirect;
 use App\Template;
+use App\Validation;
+use App\Services\LoginService;
 
 class LoginController
 {
@@ -13,14 +14,15 @@ class LoginController
         return new Template('login.twig');
     }
 
-    public function store()
+    public function store(): Redirect
     {
-        $loginService = new LoginService();
-        $loginService->execute(
-            new LoginServiceRequest(
-                $_POST['email'],
-                $_POST['password']
-            )
-        );
+        $validation = new Validation();
+        $validation->loginValidate();
+
+        if ($validation->validationFailed()) {
+            return new Redirect('/login');
+        }
+        (new LoginService())->execute();
+        return new Redirect('/');
     }
 }

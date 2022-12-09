@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\CryptoCollection;
-use App\Repositories\CryptoApiCryptoRepository;
-use App\Repositories\CryptoRepository;
+use App\Models\Collections\CryptoCollection;
+use App\Repositories\Crypto\CryptoApiCryptoRepository;
+use App\Repositories\Crypto\CryptoRepository;
 
 class IndexCryptoService
 {

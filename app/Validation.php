@@ -4,48 +4,66 @@ namespace App;
 
 class Validation
 {
-    public static function validateName(string $name): void
+    public function validate(): void
     {
-        if (!preg_match("/^[a-zA-Z-' ]*$/", $name)) {
-            $_SESSION['error'] = "name contains wrong symbols";
+        $this->validateNewName();
+        $this->validateNewEmail();
+        $this->validateNewPassword();
+    }
+
+    public function loginValidate(): void
+    {
+        $queryBuilder = Database::getConnection()->createQueryBuilder();
+        $user = $queryBuilder
+            ->select('*')
+            ->from('users')
+            ->where('email = ?')
+            ->setParameter(0, $_POST['email'])
+            ->fetchAssociative();
+
+        if (!$user) {
+            $_SESSION['errors']['email'] = 'Invalid login email or password';
+        }
+
+        if ($user && !password_verify($_POST['password'], $user['password'])) {
+            $_SESSION['errors']['password'] = 'Invalid login email or password';
         }
     }
 
-    public static function validateEmail(string $email): void
+    public function validationFailed(): bool
     {
-        foreach (Database::getConnection()->fetchAllAssociative("SELECT email FROM users") as $user) {
-            if ($user['email'] == $email)
-                $_SESSION['error'] = "email you are trying to register already exists";
+        return count($_SESSION['errors']) > 0;
+    }
+
+    private function validateNewName(): void
+    {
+        if (strlen($_POST['name']) < 3 || !preg_match("/^[a-zA-Z-' ]*$/", $_POST['name'])) {
+            $_SESSION['errors']['name'] = 'Name must be at least 3 characters long and contains only letters';
         }
     }
 
-    public static function validatePassword(string $passwordNew, string $passwordNewConfirm, ?string $passwordCurrent = null): void
+    private function validateNewEmail(): void
     {
-        $number = preg_match('@[0-9]@', $passwordNew);
-        $uppercase = preg_match('@[A-Z]@', $passwordNew);
-        $lowercase = preg_match('@[a-z]@', $passwordNew);
+        $queryBuilder = Database::getConnection()->createQueryBuilder();
+        $user = $queryBuilder
+            ->select('*')
+            ->from('users')
+            ->where('email = ?')
+            ->setParameter(0, $_POST['email'])
+            ->fetchOne();
 
-        if (strlen($passwordNew) < 8 || !$number || !$uppercase || !$lowercase)
-            $_SESSION['error'] = "password must be at least 8 characters in length and must contain at least one number, one upper case letter and one lower case letter";
-        if ($passwordNew != $passwordNewConfirm)
-            $_SESSION['error'] = "passwords are not equal!";
-        if ($passwordCurrent != null) {
-            if ($_SESSION['password'] != $passwordCurrent)
-                $_SESSION['error'] = "wrong current password!";
+        if ($user) {
+            $_SESSION['errors']['email'] = 'Invalid email address';
         }
     }
 
-    public static function validateUser(string $email, string $password): void
+    private function validateNewPassword(): void
     {
-        foreach (Database::getConnection()->fetchAllAssociative("SELECT id,email,password,name FROM users") as $user) {
-            if ($user['email'] == $email && $user['password'] == $password) {
-                $_SESSION['name'] = $user['name'];
-                $_SESSION['id'] = $user['id'];
-                $_SESSION['email'] = $user['email'];
-                $_SESSION['password'] = $user['password'];
-            }
+        if (strlen($_POST['password']) < 8) {
+            $_SESSION['errors']['password'] = 'Password must be at least 8 characters long';
         }
-        if ($_SESSION == null)
-            $_SESSION['error'] = "wrong email or password";
+        if ($_POST['password'] !== $_POST['confirm-password']) {
+            $_SESSION['errors']['password_repeat'] = 'Passwords do not match';
+        }
     }
 }

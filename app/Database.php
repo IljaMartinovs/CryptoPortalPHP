@@ -7,7 +7,7 @@ use Doctrine\DBAL\DriverManager;
 
 class Database
 {
-    private static ?Connection $connection=null;
+    private static ?Connection $connection = null;
 
     public static function getConnection(): Connection
     {

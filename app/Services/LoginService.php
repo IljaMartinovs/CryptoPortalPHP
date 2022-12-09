@@ -2,16 +2,20 @@
 
 namespace App\Services;
 
-use App\Validation;
+use App\Database;
 
 class LoginService
 {
-    public function execute(LoginServiceRequest $request): void
+    public function execute(): void
     {
-        Validation::validateUser($request->getEmail(), $request->getPassword());
-        header('Location: /login');
-        if ($_SESSION['error'] == null) {
-            header('Location: /');
-        }
+        $queryBuilder = Database::getConnection()->createQueryBuilder();
+        $user = $queryBuilder
+            ->select('*')
+            ->from('users')
+            ->where('email = ?')
+            ->setParameter(0, $_POST['email'])
+            ->fetchAssociative();
+
+        $_SESSION["auth_id"] = $user['id'];
     }
 }

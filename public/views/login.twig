@@ -44,6 +44,19 @@
                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                required="">
                     </div>
+
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="form-group form-check">
+                            {% if errors %}
+                                {% for error in errors %}
+                                    <p class="font-semi-bold text-red-600 capitalize lg:text-1xl ml-3">
+                                        X {{ error }}
+                                    </p>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
                     <div class="flex items-start">
                         <div class="flex items-center h-5">
                             <input id="terms" aria-describedby="terms" type="checkbox"

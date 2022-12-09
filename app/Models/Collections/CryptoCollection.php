@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models\Collections;
 
 use App\Models\Crypto;
 

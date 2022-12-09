@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Crypto;
 
-use App\CryptoCollection;
+use App\Models\Collections\CryptoCollection;
 
 interface CryptoRepository
 {

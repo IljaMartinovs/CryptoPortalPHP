@@ -2,25 +2,24 @@
 
 namespace App;
 
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
-
 class Template
 {
-    private string $template;
-    private array $context;
+    private string $path;
+    private array $params;
 
-    public function __construct(string $template, array $context = [])
+    public function __construct(string $path, array $params = [])
     {
-        $this->template = $template;
-        $this->context = $context;
+        $this->path = $path;
+        $this->params = $params;
     }
 
-    public function render(): void
+    public function getPath(): string
     {
-        $loader = new FilesystemLoader('public/views');
-        $twig = new Environment($loader);
-        $twig->addGlobal('session', $_SESSION);
-        echo $twig->render($this->template, $this->context);
+        return $this->path;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
     }
 }

@@ -2,12 +2,13 @@
 
 namespace App\Controllers;
 
+use App\Redirect;
+
 class LogoutController
 {
-    public function logout()
+    public function logout(): Redirect
     {
-        // unset($_SESSION['name']);
-        session_destroy();
-        header('Location: /');
+        unset($_SESSION['auth_id']);
+        return new Redirect('/');
     }
 }
