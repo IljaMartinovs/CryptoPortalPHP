@@ -7,12 +7,14 @@ class RegistrationServiceRequest
     private string $name;
     private string $email;
     private string $password;
+    private int $money;
 
-    public function __construct(string $name, string $email, string $password)
+    public function __construct(string $name, string $email, string $password, int $money = 0)
     {
         $this->name = $name;
         $this->email = $email;
         $this->password = $password;
+        $this->money = $money;
     }
 
     public function getName(): string
@@ -28,5 +30,10 @@ class RegistrationServiceRequest
     public function getPassword(): string
     {
         return $this->password;
+    }
+
+    public function getMoney(): int
+    {
+        return $this->money;
     }
 }

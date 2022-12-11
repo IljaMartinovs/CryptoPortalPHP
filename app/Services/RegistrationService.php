@@ -2,17 +2,20 @@
 
 namespace App\Services;
 
-use App\Database;
+use App\Repositories\User\MySQLUserRepository;
+use App\Repositories\User\UserRepository;
 
 class RegistrationService
 {
+    private UserRepository $userRepository;
+
+    public function __construct()
+    {
+        $this->userRepository = new MySQLUserRepository();
+    }
+
     public function execute(RegistrationServiceRequest $request): void
     {
-        Database::getConnection()->insert(
-            'users', [
-            'name' => $request->getName(),
-            'email' => filter_var($request->getEmail(), FILTER_SANITIZE_EMAIL),
-            'password' => password_hash($request->getPassword(), PASSWORD_DEFAULT)
-        ]);
+        $this->userRepository->add($request);
     }
 }

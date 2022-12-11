@@ -6,12 +6,13 @@ use App\Redirect;
 use App\Template;
 use App\Validation;
 use App\Services\LoginService;
+use App\View;
 
 class LoginController
 {
-    public function show(): Template
+    public function show(): View
     {
-        return new Template('login.twig');
+        return View::render('login.twig', []);
     }
 
     public function store(): Redirect
