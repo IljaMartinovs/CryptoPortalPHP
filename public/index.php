@@ -76,8 +76,3 @@ switch ($routeInfo[0]) {
         }
         break;
 }
-// iespeja apskatit vienu kontkretu crypto , kad uzspied uz to
-// isppeja meklet pec simbola jebkuru crypto
-// iespeja iegadaties crypto valutu (buy/sell)
-// tabula ar crypto un sasaistit tas tabulas (Has Many Relationship)
-// user_id | kada crypto | cik daudz |
