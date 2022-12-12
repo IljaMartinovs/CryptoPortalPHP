@@ -76,3 +76,5 @@ switch ($routeInfo[0]) {
         }
         break;
 }
+// delete in crypto null
+// transactions history

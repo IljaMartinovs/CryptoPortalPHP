@@ -17,6 +17,14 @@
             <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Name _ {{ auth.name }}</h5>
             <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Email _ {{ auth.email }}</h5>
             <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Balance _ {{ auth.money }}$</h5>
+            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Wallet :</h5>
+                {% for crypto in auth.crypto %}
+                    {% if crypto.trade != 'owned' %}
+                    <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ crypto.crypto_name }} {{ crypto.crypto_count }} - {{ crypto.crypto_price }}$</h5>
+                    {% endif %}
+                {% endfor %}
+
             <div class="flex mt-4 space-x-3 md:mt-6">
                 <a href="/logout"
                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700">
@@ -42,6 +50,33 @@
             </form>
         </div>
     </div>
+</div>
+<div class="px-6 py-4">
+    <h1 class="text-xl font-bold mb-2">Transaction History</h1>
+    <table class="w-full text-left table-collapse">
+        <thead>
+        <tr>
+            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Symbol</th>
+            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Transaction Type</th>
+            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Amount</th>
+            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Price</th>
+            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Bought for per count</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for crypto in auth.crypto %}
+        <tr class="odd:bg-gray-100">
+            {% if crypto.trade != 'owned' %}
+            <td class="p-2 border-t border-gray-200">{{ crypto.crypto_name }}</td>
+            <td class="p-2 border-t border-gray-200">{{ crypto.trade }}</td>
+            <td class="p-2 border-t border-gray-200">{{ crypto.crypto_count }}</td>
+            <td class="p-2 border-t border-gray-200">{{ crypto.crypto_price }}$</td>
+                <td class="p-2 border-t border-gray-200">{{ crypto.crypto_solo_price }}$</td>
+            {% endif %}
+            {% endfor %}
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>
