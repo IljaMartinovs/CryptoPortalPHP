@@ -70,7 +70,7 @@ class Validation
         }
     }
 
-    public function buyCryptoValidate(CryptoCurrenciesCollection $cryptoCurrenciesCollection, int $count): array // void
+    public function buyCryptoValidate(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $count): array
     {
         foreach ($cryptoCurrenciesCollection->all() as $crypto) {
             (int)$price = $crypto->getPrice();
@@ -82,7 +82,7 @@ class Validation
         if ($symbol != null) {
             if ($userMoney['money'] >= $price) {
                 (new EditService())->changeUserMoney(-$price);
-                return [$symbol, (int)$soloPrice, $price];
+                return [$symbol, $soloPrice, $price];
             } else {
                 $_SESSION['errors']['crypto'] = 'Not enough money';
             }
@@ -90,7 +90,7 @@ class Validation
         return [];
     }
 
-    public function sellCryptoValidate(CryptoCurrenciesCollection $cryptoCurrenciesCollection, int $count): array // void
+    public function sellCryptoValidate(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $count): array
     {
         foreach ($cryptoCurrenciesCollection->all() as $crypto) {
             (int)$price = $crypto->getPrice();
@@ -98,12 +98,11 @@ class Validation
         }
 
         $cryptoName = Database::getConnection()->executeQuery("SELECT crypto_name FROM crypto WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'")->fetchAssociative();
-        $cryptoAmount = Database::getConnection()->executeQuery("SELECT crypto_count FROM crypto WHERE id= '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'")->fetchAssociative();
-
+        $cryptoAmount = Database::getConnection()->executeQuery("SELECT crypto_count FROM crypto WHERE id= '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'owned'")->fetchAssociative();
         $newMoney = $count * $price;
         if ($cryptoName['crypto_name'] == $symbol) {
-            if ((int)$cryptoAmount['crypto_count'] >= $count) {
-                $newAmount = (int)$cryptoAmount['crypto_count'] - $count;
+            if ($cryptoAmount['crypto_count'] >= $count) {
+                $newAmount = $cryptoAmount['crypto_count'] - $count;
                 (new EditService())->changeUserMoney($newMoney);
                 return [$newAmount, $newMoney, $symbol,$price];
             } else

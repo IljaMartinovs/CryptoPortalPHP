@@ -76,5 +76,5 @@ switch ($routeInfo[0]) {
         }
         break;
 }
-// delete in crypto null
-// transactions history
+// izvadit crypto kuras ir nopirktas (vrode estj)
+// profit %

@@ -3,7 +3,6 @@
 namespace App\ViewVariables;
 
 use App\Database;
-use App\Models\Collection\TransactionsCollection;
 
 class AuthViewVariables implements ViewVariables
 {
@@ -26,24 +25,21 @@ class AuthViewVariables implements ViewVariables
             ->setParameter(0, $_SESSION['auth_id'])
             ->fetchAssociative();
 
+        $ownedCrypto = Database::getConnection()->executeQuery(
+            "SELECT crypto_name, crypto_count, crypto_price, crypto_solo_price, trade FROM crypto 
+                WHERE id = '{$_SESSION['auth_id']}' AND trade = 'owned'"
+        )->fetchAllAssociative();
+
         $count = Database::getConnection()->executeQuery(
             "SELECT crypto_name, crypto_count, crypto_price, crypto_solo_price, trade FROM crypto WHERE id = '{$_SESSION['auth_id']}'"
         )->fetchAllAssociative();
-
-//        $transactions = new TransactionsCollection();
-//        $transactions->add(new Transactions(
-//            $symbol,
-//            'sale',
-//            $price/$soloPrice,
-//            $price
-//        ));
-//        return $transactions;
         return [
             'id' => $user['id'],
             'name' => $user['name'],
             'email' => $user['email'],
             'money' => $user['money'],
             'crypto' => $count,
+            'owned' => $ownedCrypto
         ];
 
     }

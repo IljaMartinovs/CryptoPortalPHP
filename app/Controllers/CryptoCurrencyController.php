@@ -26,7 +26,7 @@ class CryptoCurrencyController
     {
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute([], $_POST['product']);
-        (new EditService())->buyCrypto($cryptoCurrencies, $_POST['quantity']);
+        (new EditService())->buyCrypto($cryptoCurrencies, (float)$_POST['quantity']);
         return new Redirect('/');
     }
 
@@ -34,7 +34,7 @@ class CryptoCurrencyController
     {
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute([], $_POST['product']);
-        (new EditService())->sellCrypto($cryptoCurrencies, $_POST['quantity']);
+        (new EditService())->sellCrypto($cryptoCurrencies, (float)$_POST['quantity']);
         return new Redirect('/');
     }
 }
