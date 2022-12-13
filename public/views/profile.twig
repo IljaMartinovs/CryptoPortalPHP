@@ -12,17 +12,15 @@
 <div class="flex justify-center">
     <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
         <div class="flex flex-col items-center pb-10">
-            <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
-                 alt="Avatar"/>
-            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Name _ {{ auth.name }}</h5>
-            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Email _ {{ auth.email }}</h5>
-            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Balance _ {{ auth.money }}$</h5>
-            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Wallet :</h5>
+            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> {{ auth.name }}</h5>
+            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> {{ auth.email }}</h5>
+            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> {{ auth.money }}$</h5>
+            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Crypto wallet :</h5>
                 {% for crypto in auth.owned %}
                     <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
+                        {% if crypto.crypto_count != 0 %}
                         {{ crypto.crypto_name }} {{ crypto.crypto_count }} - {{ crypto.crypto_price }}$</h5>
-{#                    <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">#}
-{#                        Bought for {{ crypto.crypto_solo_price }}$</h5>#}
+                    {% endif %}
                 {% endfor %}
 
             <div class="flex mt-4 space-x-3 md:mt-6">
@@ -40,7 +38,7 @@
                 <label for="amount">Enter the amount you want to deposit:</label><br><br>
                 <div class="flex items-center justify-center ">
                     <div class="flex border-2 border-gray-200 rounded">
-                        <input type="number" id="amount" name="amount"><br><br>
+                        <input type="number" id="amount" name="amount" step="0.01"><br><br>
 
                         <button class="px-4 text-white bg-gray-600 border-l" type="submit" value="Deposit">
                             Deposit
@@ -59,19 +57,21 @@
             <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Symbol</th>
             <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Transaction Type</th>
             <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Amount</th>
-            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Bought</th>
+            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Price</th>
             <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Price per one</th>
+            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Time</th>
         </tr>
         </thead>
         <tbody>
-        {% for crypto in auth.crypto %}
+        {% for crypto in auth.crypto|reverse %}
         <tr class="odd:bg-gray-100">
-            {% if crypto.trade != 'owned' and crypto.crypto_name != 0  %}
+            {% if crypto.trade != 'owned' %}
             <td class="p-2 border-t border-gray-200">{{ crypto.crypto_name }}</td>
             <td class="p-2 border-t border-gray-200">{{ crypto.trade }}</td>
             <td class="p-2 border-t border-gray-200">{{ crypto.crypto_count }}</td>
             <td class="p-2 border-t border-gray-200">{{ crypto.crypto_price }}$</td>
                 <td class="p-2 border-t border-gray-200">{{ crypto.crypto_solo_price }}$</td>
+                <td class="p-2 border-t border-gray-200">{{ crypto.bought_time }}</td>
             {% endif %}
             {% endfor %}
         </tr>

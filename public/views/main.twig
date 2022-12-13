@@ -26,15 +26,20 @@
         Welcome, {{ auth.name }}
         <ul>Balance - {{ auth.money }}$</ul>
     </h5>
+{#    $_SESSION['success']['crypto']#}
+
+
     <div class="flex justify-center items-center mb-6">
         <div class="flex justify-center items-center mb-6">
             <div class="form-group form-check">
                 {% if errors  %}
                     {% for error in errors %}
+                        {% for errory in error %}
                         <p class="font-semi-bold text-red-600 capitalize lg:text-1xl ml-3">
-                            X {{ error }}
+                            X {{ erroy }}
                         </p>
                     {% endfor %}
+                {% endfor %}
                 {% endif %}
             </div>
         </div>

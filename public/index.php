@@ -76,5 +76,4 @@ switch ($routeInfo[0]) {
         }
         break;
 }
-// izvadit crypto kuras ir nopirktas (vrode estj)
 // profit %

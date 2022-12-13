@@ -3,6 +3,7 @@
 namespace App\ViewVariables;
 
 use App\Database;
+use App\Services\CryptoCurrency\ListCryptoCurrencyService;
 
 class AuthViewVariables implements ViewVariables
 {
@@ -13,6 +14,7 @@ class AuthViewVariables implements ViewVariables
 
     public function getValue(): array
     {
+
         if (!isset($_SESSION['auth_id'])) {
             return [];
         }
@@ -31,15 +33,16 @@ class AuthViewVariables implements ViewVariables
         )->fetchAllAssociative();
 
         $count = Database::getConnection()->executeQuery(
-            "SELECT crypto_name, crypto_count, crypto_price, crypto_solo_price, trade FROM crypto WHERE id = '{$_SESSION['auth_id']}'"
+            "SELECT crypto_name, crypto_count, crypto_price, crypto_solo_price, trade, bought_time FROM crypto WHERE id = '{$_SESSION['auth_id']}'"
         )->fetchAllAssociative();
+
         return [
             'id' => $user['id'],
             'name' => $user['name'],
             'email' => $user['email'],
             'money' => $user['money'],
             'crypto' => $count,
-            'owned' => $ownedCrypto
+            'owned' => $ownedCrypto,
         ];
 
     }

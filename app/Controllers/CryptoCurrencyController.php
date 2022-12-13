@@ -14,10 +14,12 @@ class CryptoCurrencyController
         $single = $_GET['crypto'];
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute(
-            ['BTC', 'ETH', 'XRP', 'DOT', 'DOGE', 'LTC', 'BCH', 'ADA', 'BNB', 'SRM'],
+            ['BTC', 'ETH', 'XRP', 'DOT', 'DOGE', 'LTC', 'BCH', 'ADA', 'BNB', 'SRM','LUNA','MATIC'],
             $single
         );
-        return View::render('main.twig', [
+//        echo "<pre>";
+//        var_dump($cryptoCurrencies);die;
+        return View::render('test.twig', [
             'cryptoCurrencies' => $cryptoCurrencies->all()
         ]);
     }

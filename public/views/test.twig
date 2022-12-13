@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TheCryptoCurrencyPortal</title>
+</head>
+<body bgcolor="#f5f5f5">
+
+{# //NAVIGATION #}
+<nav class="bg-gray-800 p-2 flex justify-between items-center">
+    <div class="flex items-center">
+        <a href="/" class="text-white font-bold">Crypto Portal</a>
+        <form action="" method="get">
+        <label>
+            <input type="text"  name="crypto"
+                   class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white focus:outline-none focus:shadow-outline"
+                   placeholder="Search">
+            <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+                <i class="fas fa-search fa-lg text-blue-500"></i> Search
+            </button>
+        </label>
+        </form>
+    </div>
+    <div class="flex items-center">
+        <div class="relative">
+            {% if auth.name is defined %}
+            <a href="/profile"
+               class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Profile</a>
+            <span id="wallet"
+                  class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">
+                Wallet: {{ auth.money }}$
+            </span>
+
+            {% else %}
+        </div>
+        <a href="/login"
+           class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Login</a>
+        <a href="/registration"
+           class="ml-2 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Register</a>
+    </div>
+    {% endif %}
+</nav>
+
+
+
+
+<div class="flex justify-center items-center mb-6">
+    <div class="flex justify-center items-center mb-6">
+        <div class="form-group form-check">
+            {% if errors  %}
+                {% for error in errors %}
+                    <p class="font-semi-bold text-red-600 capitalize lg:text-1xl ml-3">
+                        X {{ error }}
+                    </p>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{# //CARD #}
+<div class="flex flex-wrap">
+    {% for cryptoCurrency in cryptoCurrencies %}
+            <div class="relative inline-block w-1/3 my-4 rounded shadow bg-white px-4 py-6 flex items-center">
+                <div class="ml-4">
+                    <h3 class="text-xl font-bold"><a href="?crypto={{ cryptoCurrency.symbols }}">{{ cryptoCurrency.symbols }} - {{ cryptoCurrency.name }}</a></h3>
+                    <p class="text-gray-600">Price: {{ cryptoCurrency.price|number_format(2) }}$</p>
+                    <p class="text-gray-600">1h change:
+                        <span class="{% if cryptoCurrency.percentChange1h < 0 %}text-red-600{% else %}text-green-600{% endif %}">
+                            {{ cryptoCurrency.percentChange1h|number_format(2) }}% </span></p>
+                    <p class="text-gray-600">24h change:
+                        <span class="{% if cryptoCurrency.percentChange24h < 0 %}text-red-600{% else %}text-green-600{% endif %}">
+                            {{ cryptoCurrency.percentChange24h|number_format(2) }}% </span></p>
+                    <p class="text-gray-600">7d change:
+                        <span class="{% if cryptoCurrency.percentChange7d < 0 %}text-red-600{% else %}text-green-600{% endif %}">
+                            {{ cryptoCurrency.percentChange7d|number_format(2) }}% </span></p>
+                    {% if cryptoCurrencies|length == 1 and auth.name is defined%}
+
+                        <form class="mb-4" action="/buy" method="post">
+                            <label class="block font-bold mb-2 text-gray-700 text-lg">Amount to buy:</label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" id="product" name="product" value="{{ cryptoCurrency.symbols }}"/>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="number" id="quantity" name="quantity" step="0.0001"/>
+                            <button type="submit" class="btn btn-primary mt-4">Buy</button>
+                        </form>
+
+                    <form class="mb-4" action="/sell" method="post">
+                        <label class="block font-bold mb-2 text-gray-700 text-lg">Amount to sell:</label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" id="product" name="product" value="{{ cryptoCurrency.symbols }}"/>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="number" id="quantity" name="quantity" step="0.0001"/>
+                        <button type="submit" class="btn btn-primary mt-4">Sell</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+    {% endfor %}
+</div>
+
+
+</body>
+</html>

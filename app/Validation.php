@@ -70,51 +70,45 @@ class Validation
         }
     }
 
-    public function buyCryptoValidate(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $count): array
+    public function buyCryptoValidate(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $count): void
     {
         foreach ($cryptoCurrenciesCollection->all() as $crypto) {
             (int)$price = $crypto->getPrice();
             $symbol = $crypto->getSymbols();
         }
-        $soloPrice = $price;
         $price *= $count;
         $userMoney = Database::getConnection()->executeQuery("SELECT money FROM users WHERE id= '{$_SESSION['auth_id']}'")->fetchAssociative();
-        if ($symbol != null) {
-            if ($userMoney['money'] >= $price) {
-                (new EditService())->changeUserMoney(-$price);
-                return [$symbol, $soloPrice, $price];
-            } else {
-                $_SESSION['errors']['crypto'] = 'Not enough money';
-            }
-        } else $_SESSION['errors']['crypto'] = 'Invalid crypto';
-        return [];
+
+        if ($symbol == null)
+            $_SESSION['errors']['crypto'] = 'Invalid crypto';
+        if ($userMoney['money'] < $price)
+            $_SESSION['errors']['crypto'] = 'Not enough money';
+        if (count($_SESSION['errors']['crypto']) == 0)
+            $_SESSION['success']['crypto'] = "You successfully purchased $count $symbol";
+
     }
 
-    public function sellCryptoValidate(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $count): array
+    public function sellCryptoValidate(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $count): void
     {
         foreach ($cryptoCurrenciesCollection->all() as $crypto) {
-            (int)$price = $crypto->getPrice();
             $symbol = $crypto->getSymbols();
         }
-
         $cryptoName = Database::getConnection()->executeQuery("SELECT crypto_name FROM crypto WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'")->fetchAssociative();
         $cryptoAmount = Database::getConnection()->executeQuery("SELECT crypto_count FROM crypto WHERE id= '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'owned'")->fetchAssociative();
-        $newMoney = $count * $price;
-        if ($cryptoName['crypto_name'] == $symbol) {
-            if ($cryptoAmount['crypto_count'] >= $count) {
-                $newAmount = $cryptoAmount['crypto_count'] - $count;
-                (new EditService())->changeUserMoney($newMoney);
-                return [$newAmount, $newMoney, $symbol,$price];
-            } else
-                $_SESSION['errors']['crypto'] = 'Not enough crypto currency';
-        } else
+
+        if ($cryptoName['crypto_name'] != $symbol)
             $_SESSION['errors']['crypto'] = 'You dont have this crypto currency';
-        return [];
+
+        if ((float)$cryptoAmount['crypto_count'] < $count)
+            $_SESSION['errors']['crypto'] = 'Not enough crypto currency';
+
+        if (count($_SESSION['errors']['crypto']) == 0)
+            $_SESSION['success']['crypto'] = "You successfully sold $count $symbol";
     }
 
-    public function changeMoneyValidate(int $money): string
+    public function changeMoneyValidate(float $money): float
     {
         $dbSum = Database::getConnection()->executeQuery("SELECT money FROM users WHERE id= '{$_SESSION['auth_id']}'")->fetchAssociative();
-        return (int)$dbSum['money'] + $money;
+        return (float)$dbSum['money'] + $money;
     }
 }
