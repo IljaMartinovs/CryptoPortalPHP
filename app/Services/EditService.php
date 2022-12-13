@@ -11,17 +11,9 @@ class EditService
 {
     public function changeUserMoney(float $money): void
     {
-        $currentDate = date("m/d/Y H:i:s");
-        $trade = 'deposit';
         $validation = new Validation();
         $response = $validation->changeMoneyValidate($money);
         Database::getConnection()->executeQuery("UPDATE users  SET money = '{$response}' WHERE id= '{$_SESSION['auth_id']}'");
-        if($money < 0)
-            $trade = 'withdrawal';
-        Database::getConnection()->executeQuery(
-            "INSERT INTO crypto (id,  crypto_price, trade, bought_time)
-                 VALUES ('{$_SESSION['auth_id']}', '$money','$trade','$currentDate')"
-        )->fetchAllAssociative();
     }
 
     public function buyCrypto(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $count): Redirect
@@ -50,25 +42,27 @@ class EditService
             "INSERT INTO crypto (id, crypto_name, crypto_count,crypto_solo_price, crypto_price, trade, bought_time)
                  VALUES ('{$_SESSION['auth_id']}', '$symbol', '$count','$soloPrice', CAST($price AS FLOAT),'$trade','$currentDate')"
         )->fetchAllAssociative();
-
         //IF this cryptocurrency exist then do not put trade = owned but just owned + $count + $price
-        if (count($query) == 0) {
 
+        if (count($query) == 0) {
             Database::getConnection()->executeQuery(
                 "INSERT INTO crypto (id, crypto_name, crypto_count,crypto_solo_price, crypto_price, trade)
                  VALUES ('{$_SESSION['auth_id']}', '$symbol', '$count','$soloPrice','$price','$owned')"
             )->fetchAllAssociative();
+
         } else if (count($query) == 1) {
             $currentCryptoCount = Database::getConnection()->executeQuery(
                 "SELECT crypto_price FROM crypto
                      WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'  AND trade = '$trade'"
             )->fetchAllAssociative();
             $currentPriceForCrypto = (float)($currentCryptoCount[1]["crypto_price"]);
+
             Database::getConnection()->executeQuery(
                 "UPDATE crypto SET crypto_count = crypto_count + '$count', crypto_price = crypto_price + '$currentPriceForCrypto'
               WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = '$owned'"
             )->fetchAllAssociative();
         }
+        (new EditService())->changeUserMoney(-$price);
         return new Redirect('/');
     }
 
@@ -91,6 +85,7 @@ class EditService
         $trade = 'sold';
         $currentDate = date("m/d/Y H:i:s");
         // IF WANT TO SELL NOT ALL CRYPTOCURRENCY
+
         if ($newAmount > 0) {
             Database::getConnection()->executeQuery(
                 "INSERT INTO crypto (id, crypto_name, crypto_count, crypto_solo_price, crypto_price, trade, bought_time)
@@ -101,7 +96,6 @@ class EditService
                 "UPDATE crypto SET crypto_count = crypto_count - '$count', crypto_price = crypto_price - '$newMoney'
               WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'owned'"
             )->fetchAllAssociative();
-            (new EditService())->changeUserMoney($newMoney);
 
             // IF WANT TO SELL  ALL CRYPTOCURRENCY
         } else if ($newAmount == 0 || $newAmount == null) {
@@ -109,10 +103,8 @@ class EditService
                 "INSERT INTO crypto (id, crypto_name, crypto_count, crypto_solo_price, crypto_price,  trade, bought_time)
                  VALUES ('{$_SESSION['auth_id']}', '$symbol', '$count','$price','$newMoney','$trade', '$currentDate')"
             )->fetchAllAssociative();
-
 //            Database::getConnection()->executeQuery("DELETE FROM crypto WHERE id = 18")->fetchAllAssociative();
 //            die;
-
             Database::getConnection()->executeQuery(
                 "UPDATE crypto SET crypto_count = 0, crypto_solo_price = 0, crypto_price = 0
                   WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'owned'"
@@ -127,8 +119,8 @@ class EditService
                     "DELETE FROM crypto WHERE crypto_count = 0 AND trade = 'owned'"
                 )->fetchAllAssociative();
             }
-
         }
+        (new EditService())->changeUserMoney($newMoney);
         return new Redirect('/');
     }
 }

@@ -21,6 +21,8 @@ class CoinMarketCapCryptoCurrenciesRepository implements CryptoCurrenciesReposit
             $symbols = $single;
         else
             $symbols = implode(',', $symbols);
+
+
         $response = $this->httpClient->request('GET', 'quotes/latest', [
             'headers' => [
                 'Accepts' => 'application/json',

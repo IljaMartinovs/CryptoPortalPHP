@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Models\Collection\CryptoCurrenciesCollection;
-use App\Services\EditService;
 
 class Validation
 {

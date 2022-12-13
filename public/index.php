@@ -77,3 +77,4 @@ switch ($routeInfo[0]) {
         break;
 }
 // profit %
+// purchased or sold notification

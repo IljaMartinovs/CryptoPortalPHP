@@ -6,157 +6,80 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>TheCryptoCurrencyPortal</title>
 </head>
-<body>
+<body bgcolor="#f5f5f5">
 
-{% if auth.name is defined %}
-    <div class="flex justify-center">
-        <button class="px-4 text-white bg-gray-600 border-l" type="button">
-            <a href="/">Home</a>
-        </button>
-
-        <button class="px-4 text-white bg-gray-600 border-l" type="button">
-            <a href="/profile">Profile</a>
-        </button>
+{# //NAVIGATION #}
+<nav class="bg-gray-800 p-2 flex justify-between items-center">
+    <div class="flex items-center">
+        <a href="/" class="text-white font-bold">Crypto Portal</a>
+        <form action="" method="get">
+            <label>
+                <input type="text" name="crypto"
+                       class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white focus:outline-none focus:shadow-outline"
+                       placeholder="Search">
+                <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+                    <i class="fas fa-search fa-lg text-blue-500"></i> Search
+                </button>
+            </label>
+        </form>
     </div>
+    <div class="flex items-center">
+        <div class="relative">
+            {% if auth.name is defined %}
+            <a href="/profile"
+               class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Profile</a>
+            <span id="wallet"
+                  class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">
+                Wallet: {{ auth.money }}$
+            </span>
 
-<div class="text-center">
-    <h5 class="text-xl font-medium leading-tight mb-2">
-        Welcome, {{ auth.name }}
-        <ul>Balance - {{ auth.money }}$</ul>
-    </h5>
-{#    $_SESSION['success']['crypto']#}
-
-
+            {% else %}
+        </div>
+        <a href="/login"
+           class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Login</a>
+        <a href="/registration"
+           class="ml-2 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Register</a>
+    </div>
+    {% endif %}
+</nav>
+<div class="flex justify-center items-center mb-6">
     <div class="flex justify-center items-center mb-6">
-        <div class="flex justify-center items-center mb-6">
-            <div class="form-group form-check">
-                {% if errors  %}
-                    {% for error in errors %}
-                        {% for errory in error %}
-                        <p class="font-semi-bold text-red-600 capitalize lg:text-1xl ml-3">
-                            X {{ erroy }}
-                        </p>
-                    {% endfor %}
+        <div class="form-group form-check">
+            {% if errors %}
+                {% for error in errors %}
+                    <p class="font-semi-bold text-red-600 capitalize lg:text-1xl ml-3">
+                        X {{ error }}
+                    </p>
                 {% endfor %}
-                {% endif %}
-            </div>
+            {% endif %}
         </div>
     </div>
-
-    <form action="/buy" method="post">
-        <div class="flex items-center justify-center ">
-            <div class="flex border-2 border-gray-200 rounded">
-                <label for="product">Symbol</label><br>
-                <input type="text" id="product" name="product" ><br><br>
-
-                <label for="quantity">Quantity</label><br>
-                <input type="number" id="quantity" name="quantity" step="0.0001"><br><br>
-
-                <button type="submit"
-                        class="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800">
-                    Buy
-                </button>
-            </div>
-        </div>
-    </form>
-
-    <form action="/sell" method="post">
-        <div class="flex items-center justify-center ">
-            <div class="flex border-2 border-gray-200 rounded">
-                <label for="product">Symbol</label><br>
-                <input type="text" id="product" name="product"><br><br>
-
-                <label for="quantity">Quantity</label><br>
-                <input type="number" id="quantity" name="quantity" step="0.0001"><br><br>
-
-                <button type="submit"
-                        class="px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800">
-                    Sell
-                </button>
-            </div>
-        </div>
-    </form>
-{% else %}
-    <div class="flex justify-center">
-        <button class="px-4 text-white bg-gray-600 border-l" type="button">
-            <a href="/">Home</a>
-        </button>
-
-        <button class="px-4 text-white bg-gray-600 border-l" type="button">
-            <a href="/login">Login</a>
-        </button>
-
-        <button class="px-4 text-white bg-gray-600 border-l" type="button">
-            <a href="/registration">Registration</a>
-        </button>
-    </div>
-{% endif %}
-<form action="" method="get">
-    <div class="flex items-center justify-center ">
-        <div class="flex border-2 border-gray-200 rounded">
-            <input type="text" name="crypto" class="px-4 py-2 w-80" placeholder="Search...">
-            <button class="px-4 text-white bg-gray-600 border-l">
-                Search
-            </button>
-        </div>
-    </div>
-</form>
-
-<table class="min-w-full border-collapse block md:table">
-    <thead class="block md:table-header-group">
-    <tr class="border border-grey-500 md:border-none block md:table-row absolute -top-full md:top-auto -left-full md:left-auto  md:relative ">
-        <th class="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-left block md:table-cell">
-            Symbol
-        </th>
-        <th class="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-left block md:table-cell">
-            Name
-        </th>
-        <th class="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-left block md:table-cell">
-            Price
-        </th>
-        <th class="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-left block md:table-cell">1h
-        </th>
-        <th class="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-left block md:table-cell">
-            24h
-        </th>
-        <th class="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-left block md:table-cell">7d
-        </th>
-    </tr>
-    </thead>
+</div>
+{# //CARD #}
+<div class="flex flex-wrap">
     {% for cryptoCurrency in cryptoCurrencies %}
-    <tbody class="block md:table-row-group">
-    <tr class="bg-gray-300 border border-grey-500 md:border-none block md:table-row">
-        <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell"><span
-                    class="inline-block w-1/3 md:hidden font-bold"></span><a href="?crypto={{ cryptoCurrency.symbols }}"> {{ cryptoCurrency.symbols }}</a></td>
-        <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell"><span
-                    class="inline-block w-1/3 md:hidden font-bold"></span>{{ cryptoCurrency.name }}</td>
-        <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell"><span
-                    class="inline-block w-1/3 md:hidden font-bold"></span>{{ cryptoCurrency.price|number_format(2) }}$
-        </td>
-
-        <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">
-            <div class="table-cell px-4 py-2 {{ cryptoCurrency.percentChange1h > 0 ? 'text-green-700' : 'text-red-700' }}">
-                <span class="inline-block w-1/3 md:hidden font-bold"></span> {{ cryptoCurrency.percentChange1h|number_format(2) }}
-                %
+        <div class="relative inline-block w-1/3 my-4 rounded shadow bg-white px-4 py-6 flex items-center">
+            <div class="ml-4">
+                <h3 class="text-xl font-bold"><a
+                            href="?crypto={{ cryptoCurrency.symbols }}">{{ cryptoCurrency.symbols }}
+                        - {{ cryptoCurrency.name }}</a></h3>
+                <p class="text-gray-600">Price: {{ cryptoCurrency.price|number_format(2) }}$</p>
+                <p class="text-gray-600">1h change:
+                    <span class="{% if cryptoCurrency.percentChange1h < 0 %}text-red-600{% else %}text-green-600{% endif %}">
+                            {{ cryptoCurrency.percentChange1h|number_format(2) }}% </span></p>
+                <p class="text-gray-600">24h change:
+                    <span class="{% if cryptoCurrency.percentChange24h < 0 %}text-red-600{% else %}text-green-600{% endif %}">
+                            {{ cryptoCurrency.percentChange24h|number_format(2) }}% </span></p>
+                <p class="text-gray-600">7d change:
+                    <span class="{% if cryptoCurrency.percentChange7d < 0 %}text-red-600{% else %}text-green-600{% endif %}">
+                            {{ cryptoCurrency.percentChange7d|number_format(2) }}% </span></p>
             </div>
-        </td>
-        <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">
-            <div class="table-cell px-4 py-2 {{ cryptoCurrency.percentChange24h > 0 ? 'text-green-700' : 'text-red-700' }}">
-                <span class="inline-block w-1/3 md:hidden font-bold"></span> {{ cryptoCurrency.percentChange24h|number_format(2) }}
-                %
-            </div>
-        </td>
-        <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">
-            <div class="table-cell px-4 py-2 {{ cryptoCurrency.percentChange7d > 0 ? 'text-green-700' : 'text-red-700' }}">
-                <span class="inline-block w-1/3 md:hidden font-bold"></span> {{ cryptoCurrency.percentChange7d|number_format(2) }}
-                %
-            </div>
-        </td>
-    </tr>
+        </div>
     {% endfor %}
-    </tbody>
-</table>
+</div>
+
+
 </body>
 </html>
