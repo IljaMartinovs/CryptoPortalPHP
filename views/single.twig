@@ -75,6 +75,13 @@
     </div>
 </div>
 
+{% for crypto in cryptoCurrencies.owned %}
+    <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
+    {% if crypto.crypto_count != 0 %}
+        {{ crypto.crypto_name }} {{ crypto.crypto_count }} - {{ crypto.crypto_price }}$</h5>
+    {% endif %}
+{% endfor %}
+
 {# //CARD #}
 <div class="flex justify-center">
     {% for cryptoCurrency in cryptoCurrencies %}

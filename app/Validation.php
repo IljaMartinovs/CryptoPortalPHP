@@ -97,9 +97,4 @@ class Validation
             $_SESSION['success']['crypto'] = "You successfully sold $count $symbol";
     }
 
-//    public function changeMoneyValidate(float $money): float
-//    {
-//        $dbSum = Database::getConnection()->executeQuery("SELECT money FROM users WHERE id= '{$_SESSION['auth_id']}'")->fetchAssociative();
-//        return (float)$dbSum['money'] + $money;
-//    }
 }

@@ -64,13 +64,13 @@
         <tbody>
         {% for crypto in cryptoCurrencies.crypto|reverse %}
         <tr class="odd:bg-gray-100">
-            {% if crypto.trade != 'owned' %}
+{#            {% if crypto.trade != 'owned' %}#}
             <td class="p-2 border-t border-gray-200">{{ crypto.name }}</td>
             <td class="p-2 border-t border-gray-200">{{ crypto.transaction }}</td>
             <td class="p-2 border-t border-gray-200">{{ crypto.count }}</td>
             <td class="p-2 border-t border-gray-200">{{ crypto.price }}$</td>
                 <td class="p-2 border-t border-gray-200">{{ crypto.time }}$</td>
-            {% endif %}
+{#            {% endif %}#}
             {% endfor %}
         </tr>
         </tbody>

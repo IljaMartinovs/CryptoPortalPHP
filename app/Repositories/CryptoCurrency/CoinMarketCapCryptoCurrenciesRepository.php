@@ -30,7 +30,6 @@ class CoinMarketCapCryptoCurrenciesRepository implements CryptoCurrenciesReposit
             ],
             'query' => [
                 'symbol' => $symbols,
-                //'convert' => 'USD'
             ]
         ]);
 
@@ -49,4 +48,30 @@ class CoinMarketCapCryptoCurrenciesRepository implements CryptoCurrenciesReposit
         }
         return $cryptoCurrencies;
     }
+
+//    public function findAll(): CryptoCurrenciesCollection
+//    {
+//        $response = $this->httpClient->request('GET', 'listings/latest', [
+//            'headers' => [
+//                'Accepts' => 'application/json',
+//                'X-CMC_PRO_API_KEY' => $_ENV['APIKEY']
+//            ],
+//
+//        ]);
+//
+//        $response = json_decode($response->getBody()->getContents());
+//
+//        $cryptoCurrencies = new CryptoCurrenciesCollection();
+//        foreach ($response->data as $currency) {
+//            $cryptoCurrencies->add(new CryptoCurrency(
+//                $currency->symbol,
+//                $currency->name,
+//                $currency->quote->USD->price,
+//                $currency->quote->USD->percent_change_1h,
+//                $currency->quote->USD->percent_change_24h,
+//                $currency->quote->USD->percent_change_7d
+//            ));
+//        }
+//        return $cryptoCurrencies;
+//    }
 }

@@ -16,9 +16,14 @@ class ListCryptoCurrencyService
         $this->cryptoCurrenciesCollection = new CoinMarketCapCryptoCurrenciesRepository();
     }
 
-    public function execute(array $symbols, ?string $single): CryptoCurrenciesCollection
+    public function execute(?array $symbols, ?string $single): CryptoCurrenciesCollection
     {
         return $this->cryptoCurrenciesCollection->findAllBySymbols($symbols, $single);
     }
+
+//    public function findAll(): CryptoCurrenciesCollection
+//    {
+//        return $this->cryptoCurrenciesCollection->findAll();
+//    }
 
 }

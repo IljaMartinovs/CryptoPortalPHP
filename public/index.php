@@ -21,7 +21,7 @@ use Twig\Loader\FilesystemLoader;
 $dotenv = Dotenv\Dotenv::createImmutable('../');
 $dotenv->load();
 
-$loader = new FilesystemLoader('views');
+$loader = new FilesystemLoader('../views');
 $twig = new Environment($loader);
 
 $viewVariables = [
