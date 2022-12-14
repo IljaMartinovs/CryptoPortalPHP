@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Redirect;
 use App\Services\EditService;
-use App\Template;
 use App\View;
 
 class ProfileController

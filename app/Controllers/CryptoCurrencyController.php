@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Redirect;
 use App\Services\CryptoCurrency\ListCryptoCurrencyService;
-use App\Services\EditService;
+use App\Services\CryptoCurrency\TradeCryptoCurrencyService;
 use App\View;
 
 class CryptoCurrencyController
@@ -31,7 +31,7 @@ class CryptoCurrencyController
     {
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute([], $_POST['product']);
-        (new EditService())->buyCrypto($cryptoCurrencies, (float)$_POST['quantity']);
+        (new TradeCryptoCurrencyService())->buy($cryptoCurrencies,$_POST['quantity']);
         return new Redirect('/?crypto=' . $_POST['product']);
     }
 
@@ -39,7 +39,7 @@ class CryptoCurrencyController
     {
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute([], $_POST['product']);
-        (new EditService())->sellCrypto($cryptoCurrencies, (float)$_POST['quantity']);
+        (new TradeCryptoCurrencyService())->sell($cryptoCurrencies,$_POST['quantity']);
         return new Redirect('/?crypto=' . $_POST['product']);
     }
 }

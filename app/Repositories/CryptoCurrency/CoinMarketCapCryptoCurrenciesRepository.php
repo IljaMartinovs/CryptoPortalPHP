@@ -30,7 +30,7 @@ class CoinMarketCapCryptoCurrenciesRepository implements CryptoCurrenciesReposit
             ],
             'query' => [
                 'symbol' => $symbols,
-                'convert' => 'USD'
+                //'convert' => 'USD'
             ]
         ]);
 

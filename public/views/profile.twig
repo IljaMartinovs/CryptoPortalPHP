@@ -16,7 +16,7 @@
             <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> {{ auth.email }}</h5>
             <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> {{ auth.money }}$</h5>
             <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Crypto wallet :</h5>
-                {% for crypto in auth.owned %}
+                {% for crypto in cryptoCurrencies.owned %}
                     <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
                         {% if crypto.crypto_count != 0 %}
                         {{ crypto.crypto_name }} {{ crypto.crypto_count }} - {{ crypto.crypto_price }}$</h5>
@@ -58,20 +58,18 @@
             <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Transaction Type</th>
             <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Amount</th>
             <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Price</th>
-            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Price per one</th>
             <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Time</th>
         </tr>
         </thead>
         <tbody>
-        {% for crypto in auth.crypto|reverse %}
+        {% for crypto in cryptoCurrencies.crypto|reverse %}
         <tr class="odd:bg-gray-100">
             {% if crypto.trade != 'owned' %}
-            <td class="p-2 border-t border-gray-200">{{ crypto.crypto_name }}</td>
-            <td class="p-2 border-t border-gray-200">{{ crypto.trade }}</td>
-            <td class="p-2 border-t border-gray-200">{{ crypto.crypto_count }}</td>
-            <td class="p-2 border-t border-gray-200">{{ crypto.crypto_price }}$</td>
-                <td class="p-2 border-t border-gray-200">{{ crypto.crypto_solo_price }}$</td>
-                <td class="p-2 border-t border-gray-200">{{ crypto.bought_time }}</td>
+            <td class="p-2 border-t border-gray-200">{{ crypto.name }}</td>
+            <td class="p-2 border-t border-gray-200">{{ crypto.transaction }}</td>
+            <td class="p-2 border-t border-gray-200">{{ crypto.count }}</td>
+            <td class="p-2 border-t border-gray-200">{{ crypto.price }}$</td>
+                <td class="p-2 border-t border-gray-200">{{ crypto.time }}$</td>
             {% endif %}
             {% endfor %}
         </tr>

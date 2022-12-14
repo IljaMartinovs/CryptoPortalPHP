@@ -13,6 +13,8 @@ use App\Redirect;
 use App\View;
 use App\ViewVariables\AuthViewVariables;
 use App\ViewVariables\ErrorsViewVariables;
+use App\ViewVariables\MyCryptoViewVariables;
+use App\ViewVariables\SuccessViewVariables;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -24,7 +26,9 @@ $twig = new Environment($loader);
 
 $viewVariables = [
     AuthViewVariables::class,
-    ErrorsViewVariables::class
+    ErrorsViewVariables::class,
+    SuccessViewVariables::class,
+    MyCryptoViewVariables::class
 ];
 foreach ($viewVariables as $variable) {
     $variable = new $variable;
@@ -69,6 +73,7 @@ switch ($routeInfo[0]) {
         if ($response instanceof View) {
             echo $twig->render($response->getPath(), $response->getData());
             unset($_SESSION['errors']);
+            unset($_SESSION['success']);
         }
 
         if ($response instanceof Redirect) {
@@ -76,5 +81,5 @@ switch ($routeInfo[0]) {
         }
         break;
 }
-// profit %
-// purchased or sold notification
+
+// ispeja parsutit citam profilam

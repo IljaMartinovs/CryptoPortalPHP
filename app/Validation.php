@@ -2,8 +2,6 @@
 
 namespace App;
 
-use App\Models\Collection\CryptoCurrenciesCollection;
-
 class Validation
 {
     public function validate(): void
@@ -34,7 +32,9 @@ class Validation
 
     public function validationFailed(): bool
     {
-        return count($_SESSION['errors']) > 0;
+        if(count($_SESSION['errors']) > 0)
+            return true;
+        return false;
     }
 
     private function validateNewName(): void
@@ -69,29 +69,21 @@ class Validation
         }
     }
 
-    public function buyCryptoValidate(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $count): void
+    public function buyCryptoValidate(string $symbol,float $price, float $count): void
     {
-        foreach ($cryptoCurrenciesCollection->all() as $crypto) {
-            (int)$price = $crypto->getPrice();
-            $symbol = $crypto->getSymbols();
-        }
+
         $price *= $count;
         $userMoney = Database::getConnection()->executeQuery("SELECT money FROM users WHERE id= '{$_SESSION['auth_id']}'")->fetchAssociative();
-
         if ($symbol == null)
             $_SESSION['errors']['crypto'] = 'Invalid crypto';
-        if ($userMoney['money'] < $price)
+        if ((float)$userMoney['money'] < $price)
             $_SESSION['errors']['crypto'] = 'Not enough money';
         if (count($_SESSION['errors']['crypto']) == 0)
             $_SESSION['success']['crypto'] = "You successfully purchased $count $symbol";
-
     }
 
-    public function sellCryptoValidate(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $count): void
+    public function sellCryptoValidate(string $symbol, float $count): void
     {
-        foreach ($cryptoCurrenciesCollection->all() as $crypto) {
-            $symbol = $crypto->getSymbols();
-        }
         $cryptoName = Database::getConnection()->executeQuery("SELECT crypto_name FROM crypto WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'")->fetchAssociative();
         $cryptoAmount = Database::getConnection()->executeQuery("SELECT crypto_count FROM crypto WHERE id= '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'owned'")->fetchAssociative();
 
@@ -105,9 +97,9 @@ class Validation
             $_SESSION['success']['crypto'] = "You successfully sold $count $symbol";
     }
 
-    public function changeMoneyValidate(float $money): float
-    {
-        $dbSum = Database::getConnection()->executeQuery("SELECT money FROM users WHERE id= '{$_SESSION['auth_id']}'")->fetchAssociative();
-        return (float)$dbSum['money'] + $money;
-    }
+//    public function changeMoneyValidate(float $money): float
+//    {
+//        $dbSum = Database::getConnection()->executeQuery("SELECT money FROM users WHERE id= '{$_SESSION['auth_id']}'")->fetchAssociative();
+//        return (float)$dbSum['money'] + $money;
+//    }
 }
