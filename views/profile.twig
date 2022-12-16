@@ -9,29 +9,43 @@
     <title>Profile</title>
 </head>
 <body>
+<nav class="bg-gray-800 p-2 flex justify-between items-center">
+    <div class="flex items-center">
+        <a href="/" class="text-white font-bold">Crypto Portal</a>
+    </div>
+    <div class="flex items-center">
+        <div class="relative">
+            <a href="/profile"
+               class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Profile</a>
+            <a href="/portfolio"
+               class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Portfolio</a>
+            <span id="wallet"
+                  class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">
+                Wallet: {{ auth.money }}$
+            </span>
+        </div>
+    </div>
+</nav>
 <div class="flex justify-center">
     <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
         <div class="flex flex-col items-center pb-10">
             <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> {{ auth.name }}</h5>
             <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> {{ auth.email }}</h5>
-            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> {{ auth.money }}$</h5>
-            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Crypto wallet :</h5>
-                {% for crypto in cryptoCurrencies.owned %}
-                    <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-                        {% if crypto.crypto_count != 0 %}
-                        {{ crypto.crypto_name }} {{ crypto.crypto_count }} - {{ crypto.crypto_price }}$</h5>
-                    {% endif %}
-                {% endfor %}
-
+{#            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> Balance : {{ auth.money }}$</h5>#}
             <div class="flex mt-4 space-x-3 md:mt-6">
-                <a href="/logout"
-                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700">
-                    Logout
-                </a>
                 <a href="/"
                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700">
                     Home
                 </a>
+                <a href="/portfolio"
+                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700">
+                    Portfolio
+                </a>
+                <a href="/logout"
+                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700">
+                    Logout
+                </a>
+
             </div>
             <br>
             <form action="/deposit" method="post">
@@ -51,6 +65,18 @@
 </div>
 <div class="px-6 py-4">
     <h1 class="text-xl font-bold mb-2">Transaction History</h1>
+    <form action="/profile" method="post">
+        <label for="amount">Enter symbol:</label>
+        <div class="flex items-center  ">
+            <div class="flex border-2 border-gray-200 rounded">
+                <input type="text" id="symbol" name="symbol" ><br><br>
+
+                <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+                    Search
+                </button>
+            </div>
+        </div>
+    </form>
     <table class="w-full text-left table-collapse">
         <thead>
         <tr>
@@ -62,15 +88,13 @@
         </tr>
         </thead>
         <tbody>
-        {% for crypto in cryptoCurrencies.crypto|reverse %}
+        {% for crypto in crypto|reverse %}
         <tr class="odd:bg-gray-100">
-{#            {% if crypto.trade != 'owned' %}#}
             <td class="p-2 border-t border-gray-200">{{ crypto.name }}</td>
             <td class="p-2 border-t border-gray-200">{{ crypto.transaction }}</td>
             <td class="p-2 border-t border-gray-200">{{ crypto.count }}</td>
             <td class="p-2 border-t border-gray-200">{{ crypto.price }}$</td>
                 <td class="p-2 border-t border-gray-200">{{ crypto.time }}$</td>
-{#            {% endif %}#}
             {% endfor %}
         </tr>
         </tbody>

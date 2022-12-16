@@ -20,6 +20,7 @@ class TradeCryptoCurrencyService
     {
         $info = $this->getInfo($cryptoCurrenciesCollection);
         $validation = new Validation();
+
         $validation->buyCryptoValidate($info[1], $info[0], $quantity);
         if ($validation->validationFailed()) {
             return new Redirect('/');

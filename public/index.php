@@ -7,6 +7,7 @@ session_start();
 use App\Controllers\CryptoCurrencyController;
 use App\Controllers\LoginController;
 use App\Controllers\LogoutController;
+use App\Controllers\PortfolioController;
 use App\Controllers\ProfileController;
 use App\Controllers\RegistrationController;
 use App\Redirect;
@@ -45,7 +46,11 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     $route->addRoute('POST', '/registration', [RegistrationController::class, 'store']);
     $route->addRoute('GET', '/logout', [LogoutController::class, 'logout']);
     $route->addRoute('GET', '/profile', [ProfileController::class, 'show']);
+    $route->addRoute('POST', '/profile', [ProfileController::class, 'search']);
     $route->addRoute('POST', '/deposit', [ProfileController::class, 'addMoney']);
+    $route->addRoute('GET', '/portfolio', [PortfolioController::class, 'index']);
+    $route->addRoute('POST', '/portfolio', [PortfolioController::class, 'sendCrypto']);
+
 });
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
@@ -81,5 +86,3 @@ switch ($routeInfo[0]) {
         }
         break;
 }
-
-// ispeja parsutit citam profilam

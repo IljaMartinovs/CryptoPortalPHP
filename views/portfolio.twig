@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+<nav class="bg-gray-800 p-2 flex justify-between items-center">
+    <div class="flex items-center">
+        <a href="/" class="text-white font-bold">Crypto Portal</a>
+    </div>
+    <div class="flex items-center">
+        <div class="relative">
+            <a href="/profile"
+               class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Profile</a>
+            <a href="/portfolio"
+               class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Portfolio</a>
+            <span id="wallet"
+                  class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">
+                Wallet: {{ auth.money }}$
+            </span>
+        </div>
+    </div>
+</nav>
+
+<div class="container mx-auto ">
+    <h1 class="text-3xl font-bold mb-4">My Crypto Currency Portfolio</h1>
+    <h6 class="text-2xl font-bold mb-4">Total Value: ${{ moneyInCrypto|round(2) }}</h6>
+
+
+
+    <div class="flex justify-center items-center mb-6">
+        <div class="flex justify-center items-center mb-6">
+            <div class="form-group form-check">
+                {% if errors %}
+                    {% for error in errors %}
+                        <p class="font-semi-bold text-red-600 capitalize lg:text-1xl ml-3">
+                            X {{ error }}
+                        </p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-center items-center mb-6">
+        <div class="flex justify-center items-center mb-6">
+            <div class="form-group form-check">
+                {% if success  %}
+                    {% for suc in success %}
+                        <p class="font-semi-bold text-green-600 capitalize lg:text-1xl ml-3">
+                            X {{ suc }}
+                        </p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+    <form class="w-full max-w-sm" method="post" action="/portfolio">
+        <div class="md:flex md:items-center mb-6">
+            <div class="md:w-1/3">
+                <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="email">
+                    Email to sent
+                </label>
+            </div>
+            <div class="md:w-2/3">
+                <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="email" type="email" name="email">
+            </div>
+        </div>
+            <div class="md:w-1/3">
+                <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="symbol">
+                    Symbol
+                </label>
+            </div>
+            <div class="md:w-2/3">
+                <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="symbol" type="text" name="symbol">
+            </div>
+        </div>
+        <div class="md:flex md:items-center mb-6">
+            <div class="md:w-1/3">
+                <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="amount">
+                    Amount
+                </label>
+            </div>
+            <div class="md:w-2/3">
+                <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="amount" type="text" name="amount">
+            </div>
+        </div>
+        <div class="md:flex md:items-center mb-6">
+            <div class="md:w-1/3">
+                <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="password">
+                    Confirm password
+                </label>
+            </div>
+            <div class="md:w-2/3">
+                <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="password" type="password" name="password">
+            </div>
+            <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+                Send
+            </button>
+        </div>
+    </form>
+
+
+
+
+
+
+
+
+
+
+
+    <table class="table-auto mb-4">
+        <thead>
+        <tr>
+            <th class="px-4 py-2">Coin</th>
+            <th class="px-4 py-2">Amount</th>
+            <th class="px-4 py-2">Current value</th>
+            <th class="px-4 py-2">Bought value</th>
+            <th class="px-4 py-2">Profit / Loss</th>
+        </tr>
+        </thead>
+        {% set sum = 0 %}
+        {% for crypto in owned %}
+            {% if crypto.crypto_count != 0 %}
+        <tbody>
+        <tr>
+            <td class="border px-4 py-2">{{ crypto.crypto_name }}</td>
+            <td class="border px-4 py-2">{{ crypto.crypto_count }}</td>
+            <td class="border px-4 py-2">${{ (crypto.current_price * crypto.crypto_count)|round(2)}}</td>
+            <td class="border px-4 py-2">${{ crypto.crypto_price|round(2) }}</td>
+            <td class="border px-4 py-2">
+
+                {% set profit_loss_percent = (crypto.current_price * crypto.crypto_count)|round(2) - crypto.crypto_price|round(2) %}
+
+                {% if profit_loss_percent >= 0 %}
+                    Profit: {{ profit_loss_percent|round(2) }}$
+                {% else %}
+                    Loss: {{ profit_loss_percent|abs|round(2) }}$
+                {% endif %}
+            </td>
+        </tr>
+        </tbody>
+            {% endif %}
+        {% endfor %}
+
+    </table>
+
+</div>
+
+</body>
+</html>

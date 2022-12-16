@@ -3,7 +3,6 @@
 namespace App\Repositories\UserCryptoRepository;
 
 use App\Database;
-use App\Services\CryptoCurrency\TradeCryptoCurrencyService;
 use App\Services\EditService;
 
 class MySQLCryptoRepository implements UserCryptoRepository
@@ -28,11 +27,11 @@ class MySQLCryptoRepository implements UserCryptoRepository
         $query = Database::getConnection()->executeQuery("SELECT * FROM crypto
          WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = '$owned'")->fetchAllAssociative();
 
-        //IF NOT EXIST ADD TO DATABASE
+        // IF NOT EXIST ADD TO DATABASE
         if (count($query) == 0) {
             Database::getConnection()->executeQuery(
-                "INSERT INTO crypto (id, crypto_name, crypto_count,crypto_solo_price, crypto_price, trade)
-                 VALUES ('{$_SESSION['auth_id']}', '$symbol', '$count','$soloPrice','$price','$owned')"
+                "INSERT INTO crypto (id, crypto_name, crypto_count,crypto_solo_price, crypto_price, trade, current_price)
+                 VALUES ('{$_SESSION['auth_id']}', '$symbol', '$count','$soloPrice','$price','$owned','$soloPrice')"
             )->fetchAllAssociative();
 
         } else if (count($query) == 1) {
@@ -85,4 +84,104 @@ class MySQLCryptoRepository implements UserCryptoRepository
         (new EditService())->changeUserMoney($newMoney);
     }
 
+    public function updatePrice(array $portfolio): void
+    {
+        foreach ($portfolio as $item) {
+            $price = $item->getPrice();
+            $symbol = $item->getSymbols();
+            //var_dump($item->getPrice());die;
+            Database::getConnection()->executeQuery(
+                "UPDATE crypto SET current_price = '$price'
+              WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'"
+            )->fetchAllAssociative();
+        }
+
+//        Database::getConnection()->executeQuery(
+//            "UPDATE crypto SET crypto_price = 12 WHERE crypto_name = '{$item->getSymbols()}' AND id = '{$_SESSION['id']}'"
+//        )->fetchAllAssociative();
+
+
+    }
+
+    public function getUserCrypto(int $id): array
+    {
+        return Database::getConnection()->executeQuery(
+            "SELECT crypto_name, crypto_count, crypto_price, crypto_solo_price, current_price FROM crypto 
+                 WHERE id = '{$_SESSION['auth_id']}'"
+        )->fetchAllAssociative();
+    }
+
+    public function getTransactions(int $id, ?string $symbol = null): array
+    {
+        if ($symbol != null)
+            return Database::getConnection()->executeQuery(
+                "SELECT name, count, price, transaction, time
+                 FROM transactions WHERE id = '{$_SESSION['auth_id']}' and name = '$symbol'"
+            )->fetchAllAssociative();
+        return Database::getConnection()->executeQuery(
+            "SELECT name, count, price, transaction, time
+                 FROM transactions WHERE id = '{$_SESSION['auth_id']}'"
+        )->fetchAllAssociative();
+    }
+    public function sendCrypto(string $symbol, float $amount, string $email): void
+    {
+        //GET USER OWNED INFO ABOUT THIS SYMBOL CRYPTO
+        $get = Database::getConnection()->executeQuery(
+            "SELECT crypto_name,crypto_count,current_price FROM crypto
+                 WHERE id ='{$_SESSION['auth_id']}' AND crypto_name = '$symbol'"
+        )->fetchAllAssociative();
+
+        $price = $get[0]['current_price']*$get[0]['crypto_count'] - $get[0]['current_price']*$amount;
+        $price = $get[0]['current_price']*$get[0]['crypto_count'] - $price;
+
+        // ADD TRANSACTION TO SEND
+        Database::getConnection()->executeQuery(
+            "INSERT INTO transactions (id, name, count, price, transaction)
+                 VALUES ('{$_SESSION['auth_id']}', '$symbol', '$amount','$price','send')"
+        )->fetchAllAssociative();
+
+
+
+
+        //GET ID WHERE email = $email;
+        $userEmail = Database::getConnection()->executeQuery(
+            "SELECT id FROM users
+                 WHERE email = '$email'"
+        )->fetchAllAssociative();
+        $userId = $userEmail[0]['id'];
+
+
+        // ADD TRANSACTION TO GET
+        Database::getConnection()->executeQuery(
+            "INSERT INTO transactions (id, name, count, price, transaction)
+                 VALUES ('$userId', '$symbol', '$amount','$price','get')"
+        )->fetchAllAssociative();
+
+        //CHECK IF THIS EMAIL HAVE OWNED THIS CRYPTO
+        $query = Database::getConnection()->executeQuery("SELECT * FROM crypto
+         WHERE id = '$userId' AND crypto_name = '$symbol' AND trade = 'owned'")->fetchAllAssociative();
+
+        // IF NOT SET THIS CRYPTO WITH TRADE OWNED
+        if (count($query) == 0) {
+            Database::getConnection()->executeQuery(
+                "INSERT INTO crypto (id, crypto_name, crypto_count, crypto_price, trade)
+                 VALUES ('$userId', '$symbol', '$amount','$price','owned')"
+            )->fetchAllAssociative();
+        }
+        // IF IS UPDATE CRYPTO
+        else {
+            //UPDATE CRYPTO DATABASE
+            Database::getConnection()->executeQuery(
+                "UPDATE crypto SET crypto_count = crypto_count + '$amount', crypto_price = crypto_price + '$price'
+              WHERE id = '$userId'"
+            )->fetchAllAssociative();
+        }
+
+        // SUBTRACT FROM ME CRYPTO
+        Database::getConnection()->executeQuery(
+            "UPDATE crypto SET crypto_count = crypto_count - '$amount', crypto_price = crypto_price - '$price'
+              WHERE  id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'"
+        )->fetchAllAssociative();
+
+    }
 }

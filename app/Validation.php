@@ -97,4 +97,28 @@ class Validation
             $_SESSION['success']['crypto'] = "You successfully sold $count $symbol";
     }
 
+    public function sendCrypto(string $symbol, float $amount, string $password, string $email): void
+    {
+        $crypto = Database::getConnection()->executeQuery(
+            "SELECT crypto_name, crypto_count FROM crypto
+                    WHERE id= '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'")->fetchAssociative();
+        $userPassword = Database::getConnection()->executeQuery(
+            "SELECT password FROM users
+                    WHERE id= '{$_SESSION['auth_id']}'")->fetchAssociative();
+        $checkForEmail = Database::getConnection()->executeQuery(
+            "SELECT email FROM users
+                    WHERE email= '$email'")->fetchAssociative();
+
+        if($checkForEmail['email'] != $email)
+            $_SESSION['errors']['crypto'] = "User with that e-mail doesn't exist";
+        if($crypto['crypto_name'] != $symbol)
+            $_SESSION['errors']['crypto'] = "You don't have $symbol";
+        if($crypto['crypto_count'] < $amount)
+            $_SESSION['errors']['crypto'] = "You don't have enough $symbol";
+        if(!password_verify($password ,$userPassword['password'] ))
+            $_SESSION['errors']['crypto'] = "Passwords don't match";
+        if (count($_SESSION['errors']['crypto']) == 0)
+            $_SESSION['success']['crypto'] = "You successfully send $amount $symbol";
+
+    }
 }
