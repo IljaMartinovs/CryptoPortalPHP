@@ -10,6 +10,7 @@ class CryptoCurrency
     private string $percentChange1h;
     private string $percentChange24h;
     private string $percentChange7d;
+    private ?string $logoURL;
 
     public function __construct(
         string $symbols,
@@ -17,7 +18,8 @@ class CryptoCurrency
         string $price,
         string $percentChange1h,
         string $percentChange24h,
-        string $percentChange7d
+        string $percentChange7d,
+        ?string $logoURL=null
     )
     {
         $this->symbols = $symbols;
@@ -26,6 +28,7 @@ class CryptoCurrency
         $this->percentChange1h = $percentChange1h;
         $this->percentChange24h = $percentChange24h;
         $this->percentChange7d = $percentChange7d;
+        $this->logoURL = $logoURL;
     }
 
     public function getSymbols(): string
@@ -56,5 +59,10 @@ class CryptoCurrency
     public function getPercentChange7d(): string
     {
         return $this->percentChange7d;
+    }
+
+    public function getLogoURL(): ?string
+    {
+        return $this->logoURL;
     }
 }

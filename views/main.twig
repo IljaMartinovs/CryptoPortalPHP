@@ -31,6 +31,7 @@
     <table class="mx-auto">
         <thead>
         <tr class="bg-gray-800 text-left font-bold text-white">
+            <th class="px-4 py-2">Logo</th>
             <th class="px-4 py-2">Cryptocurrency</th>
             <th class="px-4 py-2">Symbol</th>
             <th class="px-4 py-2">Price</th>
@@ -42,6 +43,9 @@
         <tbody>
         {% for cryptoCurrency in cryptoCurrencies %}
         <tr class="border-t">
+            <td class="px-4 py-2">
+                <img width="32" src="{{ cryptoCurrency.logoURL }}" alt="logo" class="img-fluid mx-auto d-block">
+            </td>
             <td class="text-left px-4 py-2">
                 <a href="?crypto={{ cryptoCurrency.symbols }}"><u>{{ cryptoCurrency.name }}</u></a></td>
             <td class="px-4 py-2">{{ cryptoCurrency.symbols }}</td>

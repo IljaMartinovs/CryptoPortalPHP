@@ -16,6 +16,7 @@ class PortfolioController
         $service = new UserService();
         $userOwnedCrypto = $service->getUserCrypto($_SESSION['auth_id']);
 
+
         $cryptoSymbols = [];
         foreach ($userOwnedCrypto as $cryptoSymbol) {
             $cryptoSymbols[] = $cryptoSymbol["crypto_name"];

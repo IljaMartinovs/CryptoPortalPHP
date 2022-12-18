@@ -39,6 +39,7 @@
         <div class="relative inline-block w-1/3 my-4 rounded shadow bg-white px-4 py-6 flex items-center">
             <div class="ml-4">
                 <h3 class="text-xl font-bold">{{ cryptoCurrency.symbols }} - {{ cryptoCurrency.name }}</h3>
+                <img width="32" src="{{ cryptoCurrency.logoURL }}" alt="logo">
                 <p class="text-gray-600">Price: {{ cryptoCurrency.price|number_format(2) }}$</p>
                 <p class="text-gray-600">1h change:
                     <span class="{% if cryptoCurrency.percentChange1h < 0 %}text-red-600{% else %}text-green-600{% endif %}">
