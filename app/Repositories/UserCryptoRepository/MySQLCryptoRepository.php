@@ -22,7 +22,6 @@ class MySQLCryptoRepository implements UserCryptoRepository
                  VALUES ('{$_SESSION['auth_id']}', '$symbol', '$count','$price','$trade')"
         )->fetchAllAssociative();
 
-
         //GET QUERY AND CHECK IF OWNED WITH THIS CRYPTO EXIST
         $query = Database::getConnection()->executeQuery("SELECT * FROM crypto
          WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = '$owned'")->fetchAllAssociative();
@@ -95,12 +94,6 @@ class MySQLCryptoRepository implements UserCryptoRepository
               WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'"
             )->fetchAllAssociative();
         }
-
-//        Database::getConnection()->executeQuery(
-//            "UPDATE crypto SET crypto_price = 12 WHERE crypto_name = '{$item->getSymbols()}' AND id = '{$_SESSION['id']}'"
-//        )->fetchAllAssociative();
-
-
     }
 
     public function getUserCrypto(int $id): array
@@ -137,11 +130,8 @@ class MySQLCryptoRepository implements UserCryptoRepository
         // ADD TRANSACTION TO SEND
         Database::getConnection()->executeQuery(
             "INSERT INTO transactions (id, name, count, price, transaction)
-                 VALUES ('{$_SESSION['auth_id']}', '$symbol', '$amount','$price','send')"
+                 VALUES ('{$_SESSION['auth_id']}', '$symbol', '$amount','$price','sent')"
         )->fetchAllAssociative();
-
-
-
 
         //GET ID WHERE email = $email;
         $userEmail = Database::getConnection()->executeQuery(
@@ -154,7 +144,7 @@ class MySQLCryptoRepository implements UserCryptoRepository
         // ADD TRANSACTION TO GET
         Database::getConnection()->executeQuery(
             "INSERT INTO transactions (id, name, count, price, transaction)
-                 VALUES ('$userId', '$symbol', '$amount','$price','get')"
+                 VALUES ('$userId', '$symbol', '$amount','$price','got')"
         )->fetchAllAssociative();
 
         //CHECK IF THIS EMAIL HAVE OWNED THIS CRYPTO

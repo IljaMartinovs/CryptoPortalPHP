@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>CryptoPortal</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        .w-full {
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        table {
+            width: 80%;
+            max-width: 1200px;
+        }
+    </style>
+</head>
+<body bgcolor="#f5f5f5">
+<header>
+    <nav class="flex items-center justify-between px-4 py-3 bg-gray-800 text-white">
+        <div class="flex items-center flex-shrink-0 mr-6">
+            <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=023" alt="Logo" class="h-8 w-8">
+            <span class="font-semibold text-xl tracking-tight"><a href="/">Crypto Portal</a></span>
+        </div>
+        <form class="flex items-center border-b border-teal-500 py-2" action="/?crypto=" method="get">
+            <input class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" name="crypto" type="text" placeholder="Search...">
+            <button class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded" >
+                Search
+            </button>
+        </form>
+        {% if auth.name is defined %}
+            <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+                <div class="text-sm lg:flex-grow">
+                </div>
+                <div>
+                    <a href="/profile" class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">Profile</a>
+                </div>
+                <div>
+                    <a href="/portfolio" class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">Portfolio</a>
+                </div>
+            </div>
+            <span id="wallet" class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">
+            Wallet: {{ auth.money }}$
+            </span>
+            <div>
+                <a href="/logout" class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">Logout</a>
+            </div>
+        {% else %}
+            <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+                <div class="text-sm lg:flex-grow">
+                </div>
+                <div>
+                    <a href="/login" class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">Log In</a>
+                </div>
+                <div>
+                    <a href="/registration" class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">Sign Up</a>
+                </div>
+            </div>
+        {% endif %}
+    </nav>
+</header>
+<main>
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

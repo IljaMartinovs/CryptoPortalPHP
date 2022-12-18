@@ -1,104 +1,57 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>Profile</title>
-</head>
-<body>
-<nav class="bg-gray-800 p-2 flex justify-between items-center">
-    <div class="flex items-center">
-        <a href="/" class="text-white font-bold">Crypto Portal</a>
-    </div>
-    <div class="flex items-center">
-        <div class="relative">
-            <a href="/profile"
-               class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Profile</a>
-            <a href="/portfolio"
-               class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">Portfolio</a>
-            <span id="wallet"
-                  class="ml-4 px-2 py-1 rounded-lg bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:shadow-outline">
-                Wallet: {{ auth.money }}$
-            </span>
-        </div>
-    </div>
-</nav>
+{% extends 'navLayout.twig' %}
+{% block content %}
 <div class="flex justify-center">
-    <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
-        <div class="flex flex-col items-center pb-10">
-            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> {{ auth.name }}</h5>
-            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> {{ auth.email }}</h5>
-{#            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white"> Balance : {{ auth.money }}$</h5>#}
-            <div class="flex mt-4 space-x-3 md:mt-6">
-                <a href="/"
-                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700">
-                    Home
-                </a>
-                <a href="/portfolio"
-                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700">
-                    Portfolio
-                </a>
-                <a href="/logout"
-                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700">
-                    Logout
-                </a>
-
-            </div>
-            <br>
+       <div class="flex flex-col items-center pb-10">
+            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Name:   {{ auth.name }}</h5>
+            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Email:   {{ auth.email }}</h5>
             <form action="/deposit" method="post">
-                <label for="amount">Enter the amount you want to deposit:</label><br><br>
+                <label for="amount">Enter amount to increase or decrease balance:</label><br><br>
                 <div class="flex items-center justify-center ">
                     <div class="flex border-2 border-gray-200 rounded">
                         <input type="number" id="amount" name="amount" step="0.01"><br><br>
 
-                        <button class="px-4 text-white bg-gray-600 border-l" type="submit" value="Deposit">
-                            Deposit
+                        <button class="px-4 bg-gray-800 text-left font-bold text-white border-l" type="submit" value="Deposit">
+                            Confirm
                         </button>
                     </div>
                 </div>
             </form>
         </div>
-    </div>
 </div>
 <div class="px-6 py-4">
-    <h1 class="text-xl font-bold mb-2">Transaction History</h1>
+    <h1 class="text-xl font-bold mb-2 flex justify-center">Transaction History</h1>
     <form action="/profile" method="post">
-        <label for="amount">Enter symbol:</label>
-        <div class="flex items-center  ">
-            <div class="flex border-2 border-gray-200 rounded">
-                <input type="text" id="symbol" name="symbol" ><br><br>
-
-                <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
-                    Search
-                </button>
-            </div>
+    <div class="flex justify-center">
+        <div class="mb-3 xl:w-96">
+            <div class="input-group relative flex flex-wrap items-stretch w-full mb-4 rounded">
+                <input type="search" id="symbol" name="symbol" class="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="Symbol" aria-label="Search" aria-describedby="button-addon2">
+           </div>
         </div>
+    </div>
     </form>
-    <table class="w-full text-left table-collapse">
+    <div class="w-full">
+        <table class="mx-auto">
         <thead>
-        <tr>
-            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Symbol</th>
-            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Transaction Type</th>
-            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Amount</th>
-            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Price</th>
-            <th class="text-sm font-semibold text-gray-700 p-2 bg-gray-100">Time</th>
+        <tr class="bg-gray-800 text-left font-bold text-white">
+            <th class="text-sm font-semibold p-2 ">Symbol</th>
+            <th class="text-sm font-semibold  p-2 ">Transaction Type</th>
+            <th class="text-sm font-semibold  p-2 ">Amount</th>
+            <th class="text-sm font-semibold  p-2 ">Price</th>
+            <th class="text-sm font-semibold  p-2 ">Time</th>
         </tr>
         </thead>
         <tbody>
         {% for crypto in crypto|reverse %}
         <tr class="odd:bg-gray-100">
-            <td class="p-2 border-t border-gray-200">{{ crypto.name }}</td>
-            <td class="p-2 border-t border-gray-200">{{ crypto.transaction }}</td>
-            <td class="p-2 border-t border-gray-200">{{ crypto.count }}</td>
-            <td class="p-2 border-t border-gray-200">{{ crypto.price }}$</td>
-                <td class="p-2 border-t border-gray-200">{{ crypto.time }}$</td>
-            {% endfor %}
+            <td class="p-2 border-t border-gray-200 text-center">{{ crypto.name }}</td>
+            <td class="p-2 border-t border-gray-200 text-center">{{ crypto.transaction }}</td>
+            <td class="p-2 border-t border-gray-200 text-center">{{ crypto.count }}</td>
+            <td class="p-2 border-t border-gray-200 text-center">{{ crypto.price }}$</td>
+            <td class="p-2 border-t border-gray-200 text-center">{{ crypto.time }}$</td>
         </tr>
+        {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
-</body>
-</html>
+{% endblock %}

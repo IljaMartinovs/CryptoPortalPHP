@@ -21,13 +21,12 @@ class Validation
             ->setParameter(0, $_POST['email'])
             ->fetchAssociative();
 
-        if (!$user) {
+        if (!$user)
             $_SESSION['errors']['email'] = 'Invalid login email or password';
-        }
 
-        if ($user && !password_verify($_POST['password'], $user['password'])) {
+        if ($user && !password_verify($_POST['password'], $user['password']))
             $_SESSION['errors']['password'] = 'Invalid login email or password';
-        }
+
     }
 
     public function validationFailed(): bool
@@ -67,6 +66,8 @@ class Validation
         if ($_POST['password'] !== $_POST['confirm-password']) {
             $_SESSION['errors']['password_repeat'] = 'Passwords do not match';
         }
+        if (count($_SESSION['errors']) == 0)
+            $_SESSION['success']['registration'] = "You successfully registered";
     }
 
     public function buyCryptoValidate(string $symbol,float $price, float $count): void

@@ -21,16 +21,15 @@ use Twig\Loader\FilesystemLoader;
 
 $dotenv = Dotenv\Dotenv::createImmutable('../');
 $dotenv->load();
-
 $loader = new FilesystemLoader('../views');
 $twig = new Environment($loader);
-
 $viewVariables = [
     AuthViewVariables::class,
     ErrorsViewVariables::class,
     SuccessViewVariables::class,
     MyCryptoViewVariables::class
 ];
+
 foreach ($viewVariables as $variable) {
     $variable = new $variable;
     $twig->addGlobal($variable->getName(), $variable->getValue());

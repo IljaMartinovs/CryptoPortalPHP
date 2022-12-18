@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Redirect;
-use App\Services\CryptoCurrency\SendCryptoCurrencyService;
 use App\Services\User\UserService;
 use App\Services\UserCrypto\ShowUserCrypto;
 use App\Validation;
