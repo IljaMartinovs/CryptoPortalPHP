@@ -10,4 +10,7 @@ interface UserCryptoRepository
     public function buy(float $price,string $symbol,float $count): void;
     public function sell(float $price,string $symbol,float $count): void;
     public function sendCrypto(string $symbol, float $amount, string $email): void;
+    public function changeUserMoney(float $money): void;
+    public function getUserShorts(int $id): array;
+    public function closeShort(float $price,string $symbol): void;
 }

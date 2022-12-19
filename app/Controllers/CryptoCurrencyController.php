@@ -17,11 +17,14 @@ class CryptoCurrencyController
             ['BTC', 'ETH', 'XRP', 'DOT', 'DOGE', 'LTC', 'BCH', 'ADA', 'BNB', 'SRM','LUNA','MATIC'],
             $single
         );
+
         if($single != null){
             return View::render('single.twig', [
                 'cryptoCurrencies' => $cryptoCurrencies->all()
             ]);
         }
+
+
         return View::render('main.twig', [
             'cryptoCurrencies' => $cryptoCurrencies->all()
         ]);
@@ -40,6 +43,14 @@ class CryptoCurrencyController
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute([], $_POST['product']);
         (new TradeCryptoCurrencyService())->sell($cryptoCurrencies,$_POST['quantity']);
+        return new Redirect('/?crypto=' . $_POST['product']);
+    }
+
+    public function sellShort(): Redirect
+    {
+        $service = new ListCryptoCurrencyService();
+        $cryptoCurrencies = $service->execute([], $_POST['product']);
+        (new TradeCryptoCurrencyService())->sellShort($cryptoCurrencies,$_POST['quantity']);
         return new Redirect('/?crypto=' . $_POST['product']);
     }
 }

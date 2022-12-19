@@ -5,7 +5,6 @@ namespace App\Repositories\CryptoCurrency;
 use App\Models\Collection\CryptoCurrenciesCollection;
 use App\Models\CryptoCurrency;
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
 
 class CoinMarketCapCryptoCurrenciesRepository implements CryptoCurrenciesRepository
 {
@@ -18,25 +17,6 @@ class CoinMarketCapCryptoCurrenciesRepository implements CryptoCurrenciesReposit
 
     public function findAllBySymbols(array $symbols, ?string $single): CryptoCurrenciesCollection
     {
-
-//        if ($single != null)
-//            $symbols = $single;
-//        else
-//            $symbols = implode(',', $symbols);
-
-//        $response = $this->httpClient->request('GET', 'quotes/latest', [
-//            'headers' => [
-//                'Accepts' => 'application/json',
-//                'X-CMC_PRO_API_KEY' => $_ENV['APIKEY']
-//            ],
-//            'query' => [
-//                'symbol' => $symbols,
-//            ]
-//        ]);
-//
-//        $response = json_decode($response->getBody()->getContents());
-
-
         $response = $this->fetch($symbols, $single);
         $cryptoCurrencies = new CryptoCurrenciesCollection();
         $info = $this->fetch($symbols, $single,'info');
@@ -56,9 +36,8 @@ class CoinMarketCapCryptoCurrenciesRepository implements CryptoCurrenciesReposit
         return $cryptoCurrencies;
     }
 
-    private function fetch(array $symbols, ?string $single,string $url='quotes/latest')
+    private function fetch(array $symbols, ?string $single,string $url='quotes/latest'): \stdClass
     {
-
         if ($single != null)
             $symbols = $single;
         else
@@ -73,7 +52,6 @@ class CoinMarketCapCryptoCurrenciesRepository implements CryptoCurrenciesReposit
                 'symbol' => $symbols,
             ]
         ]);
-
         return  json_decode($response->getBody()->getContents());
     }
 }

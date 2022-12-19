@@ -6,7 +6,7 @@
             {% if errors  %}
                 {% for error in errors %}
                     <p class="font-semi-bold text-red-600 capitalize lg:text-1xl ml-3">
-                        X {{ error }}
+                         {{ error }}
                     </p>
                 {% endfor %}
             {% endif %}
@@ -19,7 +19,7 @@
             {% if success  %}
                 {% for suc in success %}
                     <p class="font-semi-bold text-green-600 capitalize lg:text-1xl ml-3">
-                        X {{ suc }}
+                         {{ suc }}
                     </p>
                 {% endfor %}
             {% endif %}
@@ -51,19 +51,23 @@
                     <span class="{% if cryptoCurrency.percentChange7d < 0 %}text-red-600{% else %}text-green-600{% endif %}">
                             {{ cryptoCurrency.percentChange7d|number_format(2) }}% </span></p>
                 {% if cryptoCurrencies|length == 1 and auth.name is defined%}
-
                     <form class="mb-4" action="/buy" method="post">
                         <label class="block font-bold mb-2 text-gray-700 text-lg">Amount to buy:</label>
                         <input  id="product" name="product" value="{{ cryptoCurrency.symbols }}" type="hidden"/>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="number" id="quantity" name="quantity" step="0.0001"/>
                         <button type="submit"  class="bg-green-500 hover:bg-green-700 text-white text-center py-2 px-4 rounded">Buy</button>
                     </form>
-
                     <form class="mb-4" action="/sell" method="post">
                         <label class="block font-bold mb-2 text-gray-700 text-lg">Amount to sell:</label>
                         <input id="product" name="product" value="{{ cryptoCurrency.symbols }}" type="hidden"/>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="number" id="quantity" name="quantity" step="0.0001"/>
                         <button type="submit"  class="bg-red-500 hover:bg-red-700 text-white text-center py-2 px-4 rounded">Sell</button>
+                    </form>
+                    <form class="mb-4" action="/sellShort" method="post">
+                        <label class="block font-bold mb-2 text-gray-700 text-lg">Amount to short:</label>
+                        <input id="product" name="product" value="{{ cryptoCurrency.symbols }}" type="hidden"/>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="number" id="quantity" name="quantity" step="0.0001"/>
+                        <button type="submit"  class="bg-red-500 hover:bg-red-700 text-white text-center py-2 px-4 rounded">Short</button>
                     </form>
                 {% endif %}
             </div>

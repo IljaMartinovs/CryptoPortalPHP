@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Redirect;
-use App\Services\EditService;
 use App\Services\User\UserService;
 use App\View;
 
@@ -21,7 +20,8 @@ class ProfileController
 
     public function addMoney(): Redirect
     {
-        (new EditService())->changeUserMoney($_POST['amount']);
+        $service = new UserService();
+        $service->changeUserMoney($_POST['amount']);
         return new Redirect('/profile');
     }
 

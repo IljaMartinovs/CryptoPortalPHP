@@ -2,7 +2,6 @@
 
 namespace App\Services\User;
 
-use App\Models\Collection\CryptoCurrenciesCollection;
 use App\Repositories\UserCryptoRepository\MySQLCryptoRepository;
 use App\Repositories\UserCryptoRepository\UserCryptoRepository;
 
@@ -25,6 +24,11 @@ class UserService
         return $this->userCryptoRepository->getUserCrypto($id);
     }
 
+    public function getUserShorts(int $id): array
+    {
+        return $this->userCryptoRepository->getUserShorts($id);
+    }
+
     public function getTransactions(int $id,?string $symbol=null): array
     {
         return $this->userCryptoRepository->getTransactions($id,$symbol);
@@ -33,6 +37,11 @@ class UserService
     public function sendCrypto(string $symbol, float $amount, string $email): void
     {
         $this->userCryptoRepository->sendCrypto($symbol,$amount, $email);
+    }
+
+    public function changeUserMoney(float $money): void
+    {
+        $this->userCryptoRepository->changeUserMoney($money);
     }
 
 }

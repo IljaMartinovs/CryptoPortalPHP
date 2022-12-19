@@ -7,6 +7,7 @@ session_start();
 use App\Controllers\CryptoCurrencyController;
 use App\Controllers\LoginController;
 use App\Controllers\LogoutController;
+use App\Controllers\OrdersController;
 use App\Controllers\PortfolioController;
 use App\Controllers\ProfileController;
 use App\Controllers\RegistrationController;
@@ -39,6 +40,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     $route->addRoute('GET', '/', [CryptoCurrencyController::class, 'index']);
     $route->addRoute('POST', '/buy', [CryptoCurrencyController::class, 'buy']);
     $route->addRoute('POST', '/sell', [CryptoCurrencyController::class, 'sell']);
+    $route->addRoute('POST', '/sellShort', [CryptoCurrencyController::class, 'sellShort']);
     $route->addRoute('GET', '/login', [LoginController::class, 'show']);
     $route->addRoute('POST', '/login', [LoginController::class, 'store']);
     $route->addRoute('GET', '/registration', [RegistrationController::class, 'show']);
@@ -49,6 +51,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
     $route->addRoute('POST', '/deposit', [ProfileController::class, 'addMoney']);
     $route->addRoute('GET', '/portfolio', [PortfolioController::class, 'index']);
     $route->addRoute('POST', '/portfolio', [PortfolioController::class, 'sendCrypto']);
+    $route->addRoute('GET', '/orders', [OrdersController::class, 'index']);
+    $route->addRoute('POST', '/orders', [OrdersController::class, 'sellShorts']);
 
 });
 

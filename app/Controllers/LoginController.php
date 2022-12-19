@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Redirect;
-use App\Template;
 use App\Validation;
 use App\Services\LoginService;
 use App\View;

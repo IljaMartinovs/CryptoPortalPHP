@@ -1,0 +1,86 @@
+{% extends 'navLayout.twig' %}
+{% block content %}
+
+    <div class="flex justify-center items-center mb-6">
+        <div class="flex justify-center items-center mb-6">
+            <div class="form-group form-check">
+                {% if success  %}
+                    {% for suc in success %}
+                        <p class="font-semi-bold text-green-600 capitalize lg:text-1xl ml-3">
+                             {{ suc }}
+                        </p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-center items-center mb-6">
+        <div class="flex justify-center items-center mb-6">
+            <div class="form-group form-check">
+                {% if errors %}
+                    {% for error in errors %}
+                        <p class="font-semi-bold text-red-600 capitalize lg:text-1xl ml-3">
+                             {{ error }}
+                        </p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <form class="mx-auto w-1/2" method="post" action="/orders">
+        <label for="symbol" class="block text-sm font-bold mt-4 mb-2">Currency:</label>
+        <select id="symbol" name="symbol" class="border rounded w-full py-2 px-3">
+            {% for crypto in shorts %}
+                {% if crypto.crypto_count != 0 %}
+                    <option value="{{ crypto.crypto_name }}">{{ crypto.crypto_name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+
+        <button class="px-4 bg-gray-800 text-left font-bold text-white border-l" type="submit">
+            Close
+        </button>
+    </form><br><br>
+
+
+    <h1 class="text-xl font-bold mb-2 flex justify-center">Owned ShortValue - Total Value: ${{ moneyInShorts|round(2) }}</h1>
+    <div class="w-full">
+        <table class="mx-auto">
+            <thead>
+            <tr class="bg-gray-800 text-left font-bold text-white">
+                <th class="text-sm font-semibold p-2 ">Coin</th>
+                <th class="text-sm font-semibold  p-2 ">Amount</th>
+                <th class="text-sm font-semibold  p-2 ">Current value</th>
+                <th class="text-sm font-semibold  p-2 ">Bought value</th>
+                <th class="text-sm font-semibold  p-2 ">Profit / Loss</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for short in shorts %}
+                {% if short.crypto_count != 0 %}
+                    <tr class="odd:bg-gray-100">
+                        <td class="p-2 border-t border-gray-200 text-left">{{ short.crypto_name }}</td>
+                        <td class="p-2 border-t border-gray-200 text-left">{{ short.crypto_count }}</td>
+                        <td class="p-2 border-t border-gray-200 text-left">${{ (short.current_price * short.crypto_count)|round(2)}}</td>
+                        <td class="p-2 border-t border-gray-200 text-left">${{ short.crypto_price|round(2) }}</td>
+                        <td class="p-2 border-t border-gray-200 text-left">
+
+                            {% set profit_loss_percent = (short.crypto_price ) - (short.current_price * short.crypto_count) %}
+
+                            {% if profit_loss_percent >= 0 %}
+                                Profit: {{ profit_loss_percent|round(2) }}$
+{#                                ({{  (((short.current_price * short.crypto_count) - short.crypto_price|round(2)) / short.crypto_price * 100)|round(2) }}%)#}
+                            {% else %}
+                                Loss: {{ profit_loss_percent|abs|round(2) }}$
+{#                                ({{  (((short.current_price * short.crypto_count) - short.crypto_price|round(2)) / short.crypto_price * 100)|round(2) }}%)#}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

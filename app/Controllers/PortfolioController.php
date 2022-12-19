@@ -22,6 +22,7 @@ class PortfolioController
             $cryptoSymbols[] = $cryptoSymbol["crypto_name"];
         }
 
+//        var_dump($cryptoSymbols);die;
         if(count($cryptoSymbols) == 0 )
             return View::render('portfolio.twig',[]);
 
@@ -29,6 +30,7 @@ class PortfolioController
         $service = new ShowUserCrypto();
         $userCrypto = $service->execute($cryptoSymbols);
         $portfolio = $userCrypto->all();
+
 
         //UPDATE CRYPTO_PRICE
         $service = new UserService();
@@ -39,6 +41,7 @@ class PortfolioController
         foreach ($userOwnedCrypto as $coin){
             $sum += $coin['current_price']*$coin["crypto_count"];
         }
+
 
         return View::render('portfolio.twig',   [
             'owned' => $userOwnedCrypto,

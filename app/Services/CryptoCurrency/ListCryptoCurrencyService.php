@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Services\CryptoCurrency;
 
 use App\Models\Collection\CryptoCurrenciesCollection;

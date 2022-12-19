@@ -43,11 +43,11 @@
         <tbody>
         {% for crypto in crypto|reverse %}
         <tr class="odd:bg-gray-100">
-            <td class="p-2 border-t border-gray-200 text-center">{{ crypto.name }}</td>
-            <td class="p-2 border-t border-gray-200 text-center">{{ crypto.transaction }}</td>
-            <td class="p-2 border-t border-gray-200 text-center">{{ crypto.count }}</td>
-            <td class="p-2 border-t border-gray-200 text-center">{{ crypto.price }}$</td>
-            <td class="p-2 border-t border-gray-200 text-center">{{ crypto.time }}$</td>
+            <td class="p-2 border-t border-gray-200 text-left">{{ crypto.name }}</td>
+            <td class="p-2 border-t border-gray-200 text-left">{{ crypto.transaction }}</td>
+            <td class="p-2 border-t border-gray-200 text-left">{{ crypto.count }}</td>
+            <td class="p-2 border-t border-gray-200 text-left">{{ crypto.price }}$</td>
+            <td class="p-2 border-t border-gray-200 text-left">{{ crypto.time }}</td>
         </tr>
         {% endfor %}
         </tbody>

@@ -42,6 +42,19 @@ class TradeCryptoCurrencyService
         return null;
     }
 
+    public function sellShort(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $quantity): ?Redirect
+    {
+        $info = $this->getInfo($cryptoCurrenciesCollection);
+        $this->mySQLCryptoRepository->sellShort($info[0], $info[1], $quantity);
+        return null;
+    }
+
+    public function closeShort(CryptoCurrenciesCollection $cryptoCurrenciesCollection): ?Redirect
+    {
+        $info = $this->getInfo($cryptoCurrenciesCollection);
+        $this->mySQLCryptoRepository->closeShort($info[0], $info[1]);
+        return null;
+    }
     private function getInfo(CryptoCurrenciesCollection $cryptoCurrenciesCollection): array
     {
         foreach ($cryptoCurrenciesCollection->all() as $crypto) {
