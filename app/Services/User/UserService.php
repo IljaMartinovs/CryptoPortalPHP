@@ -34,9 +34,9 @@ class UserService
         return $this->userCryptoRepository->getTransactions($id,$symbol);
     }
 
-    public function sendCrypto(string $symbol, float $amount, string $email): void
+    public function sendCrypto(string $symbol, float $amount, string $email, float $currentPrice): void
     {
-        $this->userCryptoRepository->sendCrypto($symbol,$amount, $email);
+        $this->userCryptoRepository->sendCrypto($symbol,$amount, $email,$currentPrice);
     }
 
     public function changeUserMoney(float $money): void

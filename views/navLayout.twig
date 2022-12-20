@@ -38,6 +38,24 @@
                 Search
             </button>
         </form>
+                <div class="form-group form-check" style="margin-left: 150px;">
+                    {% if errors  %}
+                        {% for error in errors %}
+                            <p class="font-semi-bold text-red-600 capitalize lg:text-1xl ml-3">
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group form-check" >
+                    {% if success  %}
+                        {% for suc in success %}
+                            <p class="font-semi-bold text-green-600 capitalize lg:text-1xl ml-3">
+                                {{ suc }}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
         {% if auth.name is defined %}
             <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                 <div class="text-sm lg:flex-grow">

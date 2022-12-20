@@ -14,9 +14,9 @@ class ShowUserCrypto
         $this->cryptoCurrenciesRepository = new CoinMarketCapCryptoCurrenciesRepository();
     }
 
-    public function execute(array $userCrypto): CryptoCurrenciesCollection
+    public function execute(array $userCrypto,?string $single): CryptoCurrenciesCollection
     {
-        return $this->cryptoCurrenciesRepository->findAllBySymbols($userCrypto,$single=null);
+        return $this->cryptoCurrenciesRepository->findAllBySymbols($userCrypto,$single);
     }
 
 }

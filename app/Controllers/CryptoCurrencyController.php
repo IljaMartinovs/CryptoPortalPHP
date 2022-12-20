@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Redirect;
 use App\Services\CryptoCurrency\ListCryptoCurrencyService;
 use App\Services\CryptoCurrency\TradeCryptoCurrencyService;
+use App\Services\User\UserService;
 use App\View;
 
 class CryptoCurrencyController
@@ -14,17 +15,14 @@ class CryptoCurrencyController
         $single = $_GET['crypto'];
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute(
-            ['BTC', 'ETH', 'XRP', 'DOT', 'DOGE', 'LTC', 'BCH', 'ADA', 'BNB', 'SRM','LUNA','MATIC'],
+            ['BTC', 'ETH', 'XRP', 'DOT', 'DOGE', 'LTC', 'BCH', 'ADA', 'BNB', 'SRM', 'LUNA', 'MATIC'],
             $single
         );
 
-        if($single != null){
+        if ($single != null)
             return View::render('single.twig', [
                 'cryptoCurrencies' => $cryptoCurrencies->all()
             ]);
-        }
-
-
         return View::render('main.twig', [
             'cryptoCurrencies' => $cryptoCurrencies->all()
         ]);
@@ -34,7 +32,7 @@ class CryptoCurrencyController
     {
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute([], $_POST['product']);
-        (new TradeCryptoCurrencyService())->buy($cryptoCurrencies,$_POST['quantity']);
+        (new TradeCryptoCurrencyService())->buy($cryptoCurrencies, $_POST['quantity']);
         return new Redirect('/?crypto=' . $_POST['product']);
     }
 
@@ -42,7 +40,7 @@ class CryptoCurrencyController
     {
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute([], $_POST['product']);
-        (new TradeCryptoCurrencyService())->sell($cryptoCurrencies,$_POST['quantity']);
+        (new TradeCryptoCurrencyService())->sell($cryptoCurrencies, $_POST['quantity']);
         return new Redirect('/?crypto=' . $_POST['product']);
     }
 
@@ -50,7 +48,7 @@ class CryptoCurrencyController
     {
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute([], $_POST['product']);
-        (new TradeCryptoCurrencyService())->sellShort($cryptoCurrencies,$_POST['quantity']);
+        (new TradeCryptoCurrencyService())->sellShort($cryptoCurrencies, $_POST['quantity']);
         return new Redirect('/?crypto=' . $_POST['product']);
     }
 }

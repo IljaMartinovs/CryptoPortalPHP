@@ -16,7 +16,6 @@ class PortfolioController
         $service = new UserService();
         $userOwnedCrypto = $service->getUserCrypto($_SESSION['auth_id']);
 
-
         $cryptoSymbols = [];
         foreach ($userOwnedCrypto as $cryptoSymbol) {
             $cryptoSymbols[] = $cryptoSymbol["crypto_name"];
@@ -28,7 +27,7 @@ class PortfolioController
 
         // ALL NEW INFO ABOUT OWNED CRYPTO CURRENCIES
         $service = new ShowUserCrypto();
-        $userCrypto = $service->execute($cryptoSymbols);
+        $userCrypto = $service->execute($cryptoSymbols, $_GET['crypto']);
         $portfolio = $userCrypto->all();
 
 
@@ -51,12 +50,19 @@ class PortfolioController
 
     public function sendCrypto(): Redirect
     {
+        $service = new ShowUserCrypto();
+        $userCrypto = $service->execute([],$_POST['symbol']);
+        $portfolio = $userCrypto->all();
+        $currentPrice = $portfolio[0]->getPrice();
+//        echo "<pre>";
+//        var_dump($portfolio[0]->getprice());die;
+
         $validation = new Validation();
          $validation->sendCrypto($_POST['symbol'],$_POST['amount'],$_POST['password'],$_POST['email']);
         if ($validation->validationFailed()) {
             return new Redirect('/portfolio');
         }
-        (new UserService())->sendCrypto($_POST['symbol'],$_POST['amount'],$_POST['email']);
+        (new UserService())->sendCrypto($_POST['symbol'],$_POST['amount'],$_POST['email'],$currentPrice);
         return new Redirect('/portfolio');
     }
 

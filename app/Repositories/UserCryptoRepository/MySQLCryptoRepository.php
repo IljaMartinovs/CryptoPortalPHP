@@ -23,12 +23,6 @@ class MySQLCryptoRepository implements UserCryptoRepository
         $trade = 'purchased';
         $owned = 'owned';
 
-//        var_dump($price);
-//        var_dump($symbol);
-//        var_dump($count);
-//        var_dump($soloPrice);die;
-
-
         //GET QUERY AND CHECK IF OWNED WITH THIS CRYPTO EXIST
         $query = Database::getConnection()->executeQuery("SELECT * FROM crypto
          WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = '$owned'")->fetchAllAssociative();
@@ -42,36 +36,29 @@ class MySQLCryptoRepository implements UserCryptoRepository
 
         } else if (count($query) == 1) {
 
-            //SELECT PRICE FROM TRANSACTION WITH SAME SYMBOL
-            $currentCryptoCount = Database::getConnection()->executeQuery(
-                "SELECT price FROM transactions
-                     WHERE id = '{$_SESSION['auth_id']}' AND name = '$symbol'  AND transaction = '$trade'"
-            )->fetchAllAssociative();
-
-            $currentPriceForCrypto = (float)($currentCryptoCount[1]["price"]);
-
-
-            //UPDATE CRYPTO COUNT IN DATABASE
-            Database::getConnection()->executeQuery(
-                "UPDATE crypto SET crypto_count = crypto_count + '$count'
-              WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = '$owned'"
-            )->fetchAllAssociative();
-
-            //GET NEW CRYPTO COUNT
-            $cryptoCount = Database::getConnection()->executeQuery(
-                "SELECT crypto_count FROM crypto
+            //SELECT PRICE AND COUNT FROM CRYPTO OWNED WITH SAME SYMBOL
+            $ownedCryptoInfo = Database::getConnection()->executeQuery(
+                "SELECT crypto_price, crypto_count FROM crypto
                      WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'  AND trade = '$owned'"
             )->fetchAllAssociative();
 
+            $total_spent = $ownedCryptoInfo[0]['crypto_price'] + $price;
+            $total_crypto = $ownedCryptoInfo[0]['crypto_count'] + $count;
+            $average_bought_value = $total_spent / $total_crypto;
 
-
-            //UPDATE BOUGHT PRICE IN DATABASE
+            //UPDATE CRYPTO COUNT IN DATABASE
             Database::getConnection()->executeQuery(
-                "UPDATE crypto SET  crypto_price = crypto_price + ('$currentPriceForCrypto' * '$count')
+                "UPDATE crypto SET crypto_count = '$total_crypto'
               WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = '$owned'"
             )->fetchAllAssociative();
-        }
 
+            //UPDATE AVERAGE BOUGHT PRICE IN DATABASE
+            Database::getConnection()->executeQuery(
+                "UPDATE crypto SET  crypto_price = '$average_bought_value'
+              WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = '$owned'"
+            )->fetchAllAssociative();
+
+        }
         //ADD TRANSACTION
         Database::getConnection()->executeQuery(
             "INSERT INTO transactions (id, name, count, price, transaction)
@@ -80,26 +67,32 @@ class MySQLCryptoRepository implements UserCryptoRepository
 
         //SUBTRACT MONEY FROM USER
         $this->changeUserMoney(-$price);
+
     }
 
     public function sell(float $price, string $symbol, float $count): void
     {
-        $cryptoAmount = Database::getConnection()->executeQuery("SELECT crypto_count FROM crypto 
+        //OWNED CRYPTO AMOUNT AND PRICE
+        $cryptoAmount = Database::getConnection()->executeQuery("SELECT crypto_count,crypto_price FROM crypto 
                     WHERE id= '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'owned'")->fetchAssociative();
         $newMoney = $price * $count;
         $newAmount = $cryptoAmount['crypto_count'] - $count;
         $trade = 'sold';
 
+
+        $current_average_price =
+            ($cryptoAmount['crypto_price'] - $newMoney) / ($cryptoAmount['crypto_count'] - $count);
+
         if ($newAmount > 0) {
             //UPDATE CRYPTO OWNED PRICE
             Database::getConnection()->executeQuery(
-                "UPDATE crypto SET crypto_count = crypto_count - '$count', crypto_price = crypto_price - '$newMoney'
+                "UPDATE crypto SET crypto_count = crypto_count - '$count', crypto_price = '$current_average_price'
               WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'owned'"
             )->fetchAllAssociative();
 
         } else if ($newAmount == 0 || $newAmount == null) {
             Database::getConnection()->executeQuery(
-                "DELETE FROM crypto WHERE crypto_name = '$symbol'"
+                "DELETE FROM crypto WHERE crypto_name = '$symbol' and trade = 'owned'"
             )->fetchAllAssociative();
         }
 
@@ -117,12 +110,6 @@ class MySQLCryptoRepository implements UserCryptoRepository
         $soloPrice = $price;
         $price *= $count;
 
-        //ADD TRANSACTION
-        Database::getConnection()->executeQuery(
-            "INSERT INTO transactions (id, name, count, price, transaction)
-                 VALUES ('{$_SESSION['auth_id']}', '$symbol', '$count','$price','open short')"
-        )->fetchAllAssociative();
-
         //GET QUERY AND CHECK IF OWNED WITH THIS CRYPTO EXIST
         $query = Database::getConnection()->executeQuery("SELECT * FROM crypto
          WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'open short'")->fetchAllAssociative();
@@ -136,20 +123,34 @@ class MySQLCryptoRepository implements UserCryptoRepository
 
         } else if (count($query) == 1) {
 
-            //SELECT PRICE FROM TRANSACTION WITH SAME SYMBOL
-            $currentCryptoCount = Database::getConnection()->executeQuery(
-                "SELECT price FROM transactions
-                     WHERE id = '{$_SESSION['auth_id']}' AND name = '$symbol'  AND transaction = 'open short'"
+            //SELECT PRICE AND COUNT FROM  OPEN SHORT WITH SAME SYMBOL
+            $ownedShortInfo = Database::getConnection()->executeQuery(
+                "SELECT crypto_price, crypto_count FROM crypto
+                     WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'  AND trade = 'open short'"
             )->fetchAllAssociative();
 
-            $currentPriceForCrypto = (float)($currentCryptoCount[1]["price"]);
+            $total_spent = $ownedShortInfo[0]['crypto_price'] + $price;
+            $total_short = $ownedShortInfo[0]['crypto_count'] + $count;
 
-            //UPDATE CRYPTO DATABASE
+            //UPDATE CRYPTO COUNT IN DATABASE
             Database::getConnection()->executeQuery(
-                "UPDATE crypto SET crypto_count = crypto_count + '$count', crypto_price = crypto_price + '$currentPriceForCrypto'
+                "UPDATE crypto SET crypto_count = '$total_short'
               WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'open short'"
             )->fetchAllAssociative();
+
+            //UPDATE AVERAGE BOUGHT PRICE IN DATABASE
+            Database::getConnection()->executeQuery(
+                "UPDATE crypto SET  crypto_price = '$total_spent'
+              WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'open short'"
+            )->fetchAllAssociative();
+
         }
+
+        //ADD TRANSACTION
+        Database::getConnection()->executeQuery(
+            "INSERT INTO transactions (id, name, count, price, transaction)
+                 VALUES ('{$_SESSION['auth_id']}', '$symbol', '$count','$price','open short')"
+        )->fetchAllAssociative();
 
         $this->changeUserMoney($price);
     }
@@ -162,21 +163,38 @@ class MySQLCryptoRepository implements UserCryptoRepository
         )->fetchAllAssociative();
     }
 
-    public function closeShort(float $price,string $symbol): void
+    public function closeShort(float $price, string $symbol, float $amount): void
     {
-
+        //SELECT PRICE AND COUNT FROM  OPEN SHORT WITH SAME SYMBOL
         $ownedShort = Database::getConnection()->executeQuery(
-            "SELECT crypto_count,crypto_solo_price,crypto_price FROM crypto 
+            "SELECT crypto_count,crypto_solo_price,crypto_price FROM crypto
               WHERE id= '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'open short'")->fetchAssociative();
 
-        $amount = $ownedShort['crypto_count'];
-        $boughtPrice = $ownedShort['crypto_solo_price'];
+        $boughtPriceForAllShorts = $ownedShort['crypto_price'];
+        $userShortAmount = $ownedShort['crypto_count'];
 
-        $userMoney = $boughtPrice*$amount  - $price*$amount;
-        $earned = $userMoney;
-        $userMoney = $ownedShort['crypto_price'] - $userMoney;
+        $earned = (($boughtPriceForAllShorts/$userShortAmount) - ($price)) * $amount;
 
         $price *= $amount;
+
+        if ($userShortAmount - $amount == 0) {
+            Database::getConnection()->executeQuery(
+                "DELETE FROM crypto WHERE crypto_name = '$symbol' and trade = 'open short'"
+            )->fetchAllAssociative();
+
+        } else {
+            //UPDATE CRYPTO COUNT IN DATABASE
+            Database::getConnection()->executeQuery(
+                "UPDATE crypto SET crypto_count = crypto_count-'$amount'
+              WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'open short'"
+            )->fetchAllAssociative();
+
+            //UPDATE AVERAGE BOUGHT PRICE IN DATABASE
+            Database::getConnection()->executeQuery(
+                "UPDATE crypto SET  crypto_price = crypto_price-'$price'
+              WHERE id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'open short'"
+            )->fetchAllAssociative();
+        }
 
         //ADD TRANSACTION
         Database::getConnection()->executeQuery(
@@ -184,16 +202,12 @@ class MySQLCryptoRepository implements UserCryptoRepository
                  VALUES ('{$_SESSION['auth_id']}', '$symbol', '$amount','$price','close short')"
         )->fetchAllAssociative();
 
-            //REMOVE FROM CRYPTO OPEN SHORT
-            Database::getConnection()->executeQuery(
-                "DELETE FROM crypto WHERE crypto_name = '$symbol' and trade = 'open short'"
-            )->fetchAllAssociative();
 
-        if($earned > 0)
-        $_SESSION['success']['shorts'] = 'You successfully closed ' . $symbol . ' and earned ' . round($earned, 2) . '$';
+        if ($earned > 0)
+            $_SESSION['success']['shorts'] = 'You successfully closed ' . $symbol . ' and earned ' . round($earned, 2) . '$';
         else
             $_SESSION['errors']['shorts'] = 'You successfully closed ' . $symbol . ' and lost ' . round($earned, 2) . '$';
-        $this->changeUserMoney(-$userMoney);
+        $this->changeUserMoney((-$boughtPriceForAllShorts+$earned));
     }
 
     public function updatePrice(array $portfolio): void
@@ -229,7 +243,8 @@ class MySQLCryptoRepository implements UserCryptoRepository
                  FROM transactions WHERE id = '{$_SESSION['auth_id']}'"
         )->fetchAllAssociative();
     }
-    public function sendCrypto(string $symbol, float $amount, string $email): void
+
+    public function sendCrypto(string $symbol, float $amount, string $email, float $currentPrice): void
     {
         //GET USER OWNED INFO ABOUT THIS SYMBOL CRYPTO
         $get = Database::getConnection()->executeQuery(
@@ -237,8 +252,8 @@ class MySQLCryptoRepository implements UserCryptoRepository
                  WHERE id ='{$_SESSION['auth_id']}' AND crypto_name = '$symbol'"
         )->fetchAllAssociative();
 
-        $price = $get[0]['current_price']*$get[0]['crypto_count'] - $get[0]['current_price']*$amount;
-        $price = $get[0]['current_price']*$get[0]['crypto_count'] - $price;
+        $price = $get[0]['current_price'] * $get[0]['crypto_count'] - $get[0]['current_price'] * $amount;
+        $price = $get[0]['current_price'] * $get[0]['crypto_count'] - $price;
 
         // ADD TRANSACTION TO SEND
         Database::getConnection()->executeQuery(
@@ -253,7 +268,6 @@ class MySQLCryptoRepository implements UserCryptoRepository
         )->fetchAllAssociative();
         $userId = $userEmail[0]['id'];
 
-
         // ADD TRANSACTION TO GET
         Database::getConnection()->executeQuery(
             "INSERT INTO transactions (id, name, count, price, transaction)
@@ -267,11 +281,10 @@ class MySQLCryptoRepository implements UserCryptoRepository
         // IF NOT SET THIS CRYPTO WITH TRADE OWNED
         if (count($query) == 0) {
             Database::getConnection()->executeQuery(
-                "INSERT INTO crypto (id, crypto_name, crypto_count, crypto_price, trade)
-                 VALUES ('$userId', '$symbol', '$amount','$price','owned')"
+                "INSERT INTO crypto (id, crypto_name, crypto_count,crypto_solo_price, crypto_price, trade)
+                 VALUES ('$userId', '$symbol', '$amount','$currentPrice','$price','owned')"
             )->fetchAllAssociative();
-        }
-        // IF IS UPDATE CRYPTO
+        } // IF IS UPDATE CRYPTO
         else {
             //UPDATE CRYPTO DATABASE
             Database::getConnection()->executeQuery(
