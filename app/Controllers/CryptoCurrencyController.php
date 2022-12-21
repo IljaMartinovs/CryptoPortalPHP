@@ -13,6 +13,8 @@ class CryptoCurrencyController
     public function index(): View
     {
         $single = $_GET['crypto'];
+        $service = new UserService();
+        $userOwnedCrypto = $service->getUserCrypto($_SESSION['auth_id'],$single);
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute(
             ['BTC', 'ETH', 'XRP', 'DOT', 'DOGE', 'LTC', 'BCH', 'ADA', 'BNB', 'SRM', 'LUNA', 'MATIC'],
@@ -21,7 +23,8 @@ class CryptoCurrencyController
 
         if ($single != null)
             return View::render('single.twig', [
-                'cryptoCurrencies' => $cryptoCurrencies->all()
+                'cryptoCurrencies' => $cryptoCurrencies->all(),
+                'ownedCrypto' => $userOwnedCrypto
             ]);
         return View::render('main.twig', [
             'cryptoCurrencies' => $cryptoCurrencies->all()

@@ -52,7 +52,6 @@ class OrdersController
 
     public function sellShorts(): Redirect
     {
-
         $service = new ListCryptoCurrencyService();
         $cryptoCurrencies = $service->execute([], $_POST['symbol']);
         (new TradeCryptoCurrencyService())->closeShort($cryptoCurrencies,$_POST['amount']);

@@ -167,15 +167,15 @@ class MySQLCryptoRepository implements UserCryptoRepository
     {
         //SELECT PRICE AND COUNT FROM  OPEN SHORT WITH SAME SYMBOL
         $ownedShort = Database::getConnection()->executeQuery(
-            "SELECT crypto_count,crypto_solo_price,crypto_price FROM crypto
+            "SELECT crypto_count,crypto_solo_price,crypto_price,current_price FROM crypto
               WHERE id= '{$_SESSION['auth_id']}' AND crypto_name = '$symbol' AND trade = 'open short'")->fetchAssociative();
 
-        $boughtPriceForAllShorts = $ownedShort['crypto_price'];
+        $boughtPriceForAllShorts = $ownedShort['crypto_solo_price']* $amount;
         $userShortAmount = $ownedShort['crypto_count'];
-
-        $earned = (($boughtPriceForAllShorts/$userShortAmount) - ($price)) * $amount;
-
-        $price *= $amount;
+        $currentPrice = $ownedShort['current_price'];
+        $soloPrice = $ownedShort['crypto_solo_price'];
+        $price = $currentPrice * $amount;
+        $earned = ($currentPrice - $soloPrice)*$amount;
 
         if ($userShortAmount - $amount == 0) {
             Database::getConnection()->executeQuery(
@@ -202,12 +202,11 @@ class MySQLCryptoRepository implements UserCryptoRepository
                  VALUES ('{$_SESSION['auth_id']}', '$symbol', '$amount','$price','close short')"
         )->fetchAllAssociative();
 
-
-        if ($earned > 0)
-            $_SESSION['success']['shorts'] = 'You successfully closed ' . $symbol . ' and earned ' . round($earned, 2) . '$';
+        if (-$earned > 0)
+            $_SESSION['success']['shorts'] = 'You successfully closed ' . $symbol . ' and earned ' . round($earned, 3) . '$';
         else
-            $_SESSION['errors']['shorts'] = 'You successfully closed ' . $symbol . ' and lost ' . round($earned, 2) . '$';
-        $this->changeUserMoney((-$boughtPriceForAllShorts+$earned));
+            $_SESSION['errors']['shorts'] = 'You successfully closed ' . $symbol . ' and lost ' . round($earned, 3) . '$';
+        $this->changeUserMoney(-$boughtPriceForAllShorts - $earned);
     }
 
     public function updatePrice(array $portfolio): void
@@ -223,8 +222,14 @@ class MySQLCryptoRepository implements UserCryptoRepository
         }
     }
 
-    public function getUserCrypto(int $id): array
+    public function getUserCrypto(int $id, ?string $symbol=null): array
     {
+        if($symbol != null)
+            return Database::getConnection()->executeQuery(
+                "SELECT crypto_name, crypto_count, crypto_price, crypto_solo_price, current_price FROM crypto 
+                 WHERE id = '{$_SESSION['auth_id']}' and crypto_name = '$symbol' and trade = 'owned'"
+            )->fetchAllAssociative();
+
         return Database::getConnection()->executeQuery(
             "SELECT crypto_name, crypto_count, crypto_price, crypto_solo_price, current_price FROM crypto 
                  WHERE id = '{$_SESSION['auth_id']}' and trade = 'owned'"
