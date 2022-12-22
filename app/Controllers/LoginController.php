@@ -9,6 +9,15 @@ use App\View;
 
 class LoginController
 {
+    private LoginService $loginService;
+    private Validation $validation;
+
+    public function __construct(LoginService $loginService,Validation $validation)
+    {
+        $this->loginService = $loginService;
+        $this->validation = $validation;
+    }
+
     public function show(): View
     {
         return View::render('login.twig', []);
@@ -16,13 +25,11 @@ class LoginController
 
     public function store(): Redirect
     {
-        $validation = new Validation();
-        $validation->loginValidate();
-
-        if ($validation->validationFailed()) {
+        $this->validation->loginValidate();
+        if ( $this->validation->validationFailed()) {
             return new Redirect('/login');
         }
-        (new LoginService())->execute();
+        $this->loginService->execute();
         return new Redirect('/');
     }
 }

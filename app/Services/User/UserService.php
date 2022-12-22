@@ -2,16 +2,15 @@
 
 namespace App\Services\User;
 
-use App\Repositories\UserCryptoRepository\MySQLCryptoRepository;
 use App\Repositories\UserCryptoRepository\UserCryptoRepository;
 
 class UserService
 {
     private UserCryptoRepository $userCryptoRepository;
 
-    public function __construct()
+    public function __construct(UserCryptoRepository $userCryptoRepository)
     {
-        $this->userCryptoRepository = new MySQLCryptoRepository();
+        $this->userCryptoRepository = $userCryptoRepository;
     }
 
     public function updatePrice(array $portfolio): void
@@ -43,5 +42,4 @@ class UserService
     {
         $this->userCryptoRepository->changeUserMoney($money);
     }
-
 }

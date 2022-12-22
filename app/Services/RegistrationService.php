@@ -2,16 +2,15 @@
 
 namespace App\Services;
 
-use App\Repositories\User\MySQLUserRepository;
 use App\Repositories\User\UserRepository;
 
 class RegistrationService
 {
     private UserRepository $userRepository;
 
-    public function __construct()
+    public function __construct(UserRepository $userRepository)
     {
-        $this->userRepository = new MySQLUserRepository();
+        $this->userRepository = $userRepository;
     }
 
     public function execute(RegistrationServiceRequest $request): void

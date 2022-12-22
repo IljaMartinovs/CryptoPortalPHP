@@ -10,6 +10,16 @@ use App\View;
 
 class RegistrationController
 {
+    private RegistrationService $registrationService;
+    private Validation $validation;
+
+    public function __construct(RegistrationService $registrationService,
+                                Validation $validation)
+    {
+        $this->registrationService = $registrationService;
+        $this->validation = $validation;
+    }
+
     public function show(): View
     {
         return View::render('registration.twig', []);
@@ -17,14 +27,11 @@ class RegistrationController
 
     public function store(): Redirect
     {
-        $validation = new Validation();
-        $validation->validate();
-        if ($validation->validationFailed()) {
+        $this->validation->validate();
+        if ($this->validation->validationFailed()) {
             return new Redirect('/registration');
         }
-
-        $registerService = new RegistrationService();
-        $registerService->execute(
+        $this->registrationService->execute(
             new RegistrationServiceRequest(
                 $_POST['name'],
                 $_POST['email'],

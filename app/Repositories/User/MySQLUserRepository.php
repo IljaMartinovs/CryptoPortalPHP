@@ -28,8 +28,10 @@ class MySQLUserRepository implements UserRepository
             ->setParameter(0, $_POST['email'])
             ->fetchAssociative();
         $_SESSION["auth_id"] = $user['id'];
-        $idFromUsers = Database::getConnection()->executeQuery("SELECT id FROM users WHERE id = '{$_SESSION['auth_id']}'")->fetchAssociative();
-        $searchInCrypto = Database::getConnection()->executeQuery("SELECT id FROM crypto WHERE id = '{$idFromUsers['id']}'")->fetchAssociative();
+        $idFromUsers = Database::getConnection()->executeQuery(
+            "SELECT id FROM users WHERE id = '{$_SESSION['auth_id']}'")->fetchAssociative();
+        $searchInCrypto = Database::getConnection()->executeQuery(
+            "SELECT id FROM crypto WHERE id = '{$idFromUsers['id']}'")->fetchAssociative();
         if ($idFromUsers['id'] != $searchInCrypto['id']) {
             Database::getConnection()->insert(
                 'crypto', [

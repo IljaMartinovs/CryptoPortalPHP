@@ -12,6 +12,12 @@ use App\Controllers\PortfolioController;
 use App\Controllers\ProfileController;
 use App\Controllers\RegistrationController;
 use App\Redirect;
+use App\Repositories\CryptoCurrency\CoinMarketCapCryptoCurrenciesRepository;
+use App\Repositories\CryptoCurrency\CryptoCurrenciesRepository;
+use App\Repositories\User\MySQLUserRepository;
+use App\Repositories\User\UserRepository;
+use App\Repositories\UserCryptoRepository\MySQLCryptoRepository;
+use App\Repositories\UserCryptoRepository\UserCryptoRepository;
 use App\View;
 use App\ViewVariables\AuthViewVariables;
 use App\ViewVariables\ErrorsViewVariables;
@@ -19,11 +25,27 @@ use App\ViewVariables\MyCryptoViewVariables;
 use App\ViewVariables\SuccessViewVariables;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use function DI\create;
 
 $dotenv = Dotenv\Dotenv::createImmutable('../');
 $dotenv->load();
 $loader = new FilesystemLoader('../views');
 $twig = new Environment($loader);
+
+$container = new DI\Container();
+$container->set(
+    CryptoCurrenciesRepository::class,
+    create(CoinMarketCapCryptoCurrenciesRepository::class)
+);
+$container->set(
+    UserRepository::class,
+    create(MySQLUserRepository::class)
+);
+$container->set(
+    UserCryptoRepository::class,
+    create(MySQLCryptoRepository::class)
+);
+
 $viewVariables = [
     AuthViewVariables::class,
     ErrorsViewVariables::class,
@@ -67,17 +89,19 @@ $uri = rawurldecode($uri);
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
+        echo "Page not found";
         //404
         break;
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
         $allowedMethods = $routeInfo[1];
+        echo "Method not allowed";
         //405
         break;
     case FastRoute\Dispatcher::FOUND:
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
         [$controller, $method] = $handler;
-        $response = (new $controller)->{$method}();
+        $response = $container->get($controller)->{$method}();
         if ($response instanceof View) {
             echo $twig->render($response->getPath(), $response->getData());
             unset($_SESSION['errors']);

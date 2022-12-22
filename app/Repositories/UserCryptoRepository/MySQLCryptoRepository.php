@@ -4,7 +4,6 @@ namespace App\Repositories\UserCryptoRepository;
 
 use App\Database;
 
-
 class MySQLCryptoRepository implements UserCryptoRepository
 {
     public function changeUserMoney(float $money): void
@@ -16,8 +15,6 @@ class MySQLCryptoRepository implements UserCryptoRepository
 
     public function buy(float $price, string $symbol, float $count): void
     {
-//        Database::getConnection()->executeQuery("DELETE FROM crypto WHERE id = 18")->fetchAllAssociative();
-//        die;
         $soloPrice = $price;
         $price *= $count;
         $trade = 'purchased';
@@ -78,7 +75,6 @@ class MySQLCryptoRepository implements UserCryptoRepository
         $newMoney = $price * $count;
         $newAmount = $cryptoAmount['crypto_count'] - $count;
         $trade = 'sold';
-
 
         $current_average_price =
             ($cryptoAmount['crypto_price'] - $newMoney) / ($cryptoAmount['crypto_count'] - $count);
@@ -303,6 +299,5 @@ class MySQLCryptoRepository implements UserCryptoRepository
             "UPDATE crypto SET crypto_count = crypto_count - '$amount', crypto_price = crypto_price - '$price'
               WHERE  id = '{$_SESSION['auth_id']}' AND crypto_name = '$symbol'"
         )->fetchAllAssociative();
-
     }
 }

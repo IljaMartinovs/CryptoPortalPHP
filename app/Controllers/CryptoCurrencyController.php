@@ -10,16 +10,26 @@ use App\View;
 
 class CryptoCurrencyController
 {
+    private ListCryptoCurrencyService $listCryptoCurrencyService;
+    private TradeCryptoCurrencyService $tradeCryptoCurrencyService;
+    private UserService $userService;
+
+    public function __construct(ListCryptoCurrencyService $listCryptoCurrencyService,
+                                TradeCryptoCurrencyService $tradeCryptoCurrencyService,
+                                UserService $userService)
+    {
+        $this->listCryptoCurrencyService = $listCryptoCurrencyService;
+        $this->tradeCryptoCurrencyService = $tradeCryptoCurrencyService;
+        $this->userService = $userService;
+    }
+
     public function index(): View
     {
         $single = $_GET['crypto'];
-        $service = new UserService();
-        $userOwnedCrypto = $service->getUserCrypto($_SESSION['auth_id'],$single);
-        $service = new ListCryptoCurrencyService();
-        $cryptoCurrencies = $service->execute(
+        $userOwnedCrypto = $this->userService->getUserCrypto($_SESSION['auth_id'],$single);
+        $cryptoCurrencies = $this->listCryptoCurrencyService->execute(
             ['BTC', 'ETH', 'XRP', 'DOT', 'DOGE', 'LTC', 'BCH', 'ADA', 'BNB', 'SRM', 'LUNA', 'MATIC'],
-            $single
-        );
+            $single);
 
         if ($single != null)
             return View::render('single.twig', [
@@ -33,25 +43,22 @@ class CryptoCurrencyController
 
     public function buy(): Redirect
     {
-        $service = new ListCryptoCurrencyService();
-        $cryptoCurrencies = $service->execute([], $_POST['product']);
-        (new TradeCryptoCurrencyService())->buy($cryptoCurrencies, $_POST['quantity']);
+        $cryptoCurrencies = $this->listCryptoCurrencyService->execute([], $_POST['product']);
+        $this->tradeCryptoCurrencyService->buy($cryptoCurrencies, $_POST['quantity']);
         return new Redirect('/?crypto=' . $_POST['product']);
     }
 
     public function sell(): Redirect
     {
-        $service = new ListCryptoCurrencyService();
-        $cryptoCurrencies = $service->execute([], $_POST['product']);
-        (new TradeCryptoCurrencyService())->sell($cryptoCurrencies, $_POST['quantity']);
+        $cryptoCurrencies = $this->listCryptoCurrencyService->execute([], $_POST['product']);
+        $this->tradeCryptoCurrencyService->sell($cryptoCurrencies, $_POST['quantity']);
         return new Redirect('/?crypto=' . $_POST['product']);
     }
 
     public function sellShort(): Redirect
     {
-        $service = new ListCryptoCurrencyService();
-        $cryptoCurrencies = $service->execute([], $_POST['product']);
-        (new TradeCryptoCurrencyService())->sellShort($cryptoCurrencies, $_POST['quantity']);
+        $cryptoCurrencies = $this->listCryptoCurrencyService->execute([], $_POST['product']);
+        $this->tradeCryptoCurrencyService->sellShort($cryptoCurrencies, $_POST['quantity']);
         return new Redirect('/?crypto=' . $_POST['product']);
     }
 }

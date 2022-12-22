@@ -2,27 +2,29 @@
 
 namespace App\Services\CryptoCurrency;
 
+use App\CryptoValidation;
 use App\Models\Collection\CryptoCurrenciesCollection;
 use App\Redirect;
-use App\Repositories\UserCryptoRepository;
-use App\Validation;
+use App\Repositories\UserCryptoRepository\MySQLCryptoRepository;
 
 class TradeCryptoCurrencyService
 {
-    private UserCryptoRepository\MySQLCryptoRepository $mySQLCryptoRepository;
+    private MySQLCryptoRepository $mySQLCryptoRepository;
+    private CryptoValidation $validation;
 
-    public function __construct()
+    public function __construct( MySQLCryptoRepository $mySQLCryptoRepository,
+                                 CryptoValidation $validation)
     {
-        $this->mySQLCryptoRepository = new UserCryptoRepository\MySQLCryptoRepository();
+
+        $this->mySQLCryptoRepository = $mySQLCryptoRepository;
+        $this->validation = $validation;
     }
 
     public function buy(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $quantity): ?Redirect
     {
         $info = $this->getInfo($cryptoCurrenciesCollection);
-        $validation = new Validation();
-
-        $validation->buyCryptoValidate($info[1], $info[0], $quantity);
-        if ($validation->validationFailed()) {
+        $this->validation->buyCryptoValidate($info[1], $info[0], $quantity);
+        if ($this->validation->validationFailed()) {
             return new Redirect('/');
         }
         $this->mySQLCryptoRepository->buy($info[0], $info[1], $quantity);
@@ -31,11 +33,9 @@ class TradeCryptoCurrencyService
 
     public function sell(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $quantity): ?Redirect
     {
-        //NEED VALIDATION
         $info = $this->getInfo($cryptoCurrenciesCollection);
-        $validation = new Validation();
-        $validation->sellCryptoValidate($info[1], $quantity);
-        if ($validation->validationFailed()) {
+        $this->validation->sellCryptoValidate($info[1],$info[0], $quantity);
+        if ( $this->validation->validationFailed()) {
             return new Redirect('/');
         }
         $this->mySQLCryptoRepository->sell($info[0], $info[1], $quantity);
@@ -52,6 +52,10 @@ class TradeCryptoCurrencyService
     public function closeShort(CryptoCurrenciesCollection $cryptoCurrenciesCollection, float $amount): ?Redirect
     {
         $info = $this->getInfo($cryptoCurrenciesCollection);
+        $this->validation->closeShort($info[1],$amount);
+        if ( $this->validation->validationFailed()) {
+            return new Redirect('/orders');
+        }
         $this->mySQLCryptoRepository->closeShort($info[0], $info[1],$amount);
         return null;
     }
