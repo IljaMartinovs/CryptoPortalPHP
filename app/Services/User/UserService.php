@@ -19,7 +19,7 @@ class UserService
          $this->userCryptoRepository->updatePrice($portfolio);
     }
 
-    public function getUserCrypto(int $id, ?string $symbol=null): array
+    public function getUserCrypto(?int $id=null, ?string $symbol=null): array
     {
         return $this->userCryptoRepository->getUserCrypto($id,$symbol);
     }

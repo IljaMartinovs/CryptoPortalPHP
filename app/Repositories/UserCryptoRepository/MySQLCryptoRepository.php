@@ -222,7 +222,7 @@ class MySQLCryptoRepository implements UserCryptoRepository
         }
     }
 
-    public function getUserCrypto(int $id, ?string $symbol=null): array
+    public function getUserCrypto(?int $id=null, ?string $symbol=null): array
     {
         if($symbol != null)
             return Database::getConnection()->executeQuery(
