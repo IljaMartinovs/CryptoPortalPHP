@@ -30,5 +30,5 @@ Cryptocurrency platform where you can :
 4. Import database file "crypto-api.sql" from dabatase directory :
 run command - ```mysql -u username -p database_name < crypto-api.sql```(replace username with your actual username that you use to connect to the databse | replace database_name with 'crypto-api')
 ## Run the project
-To run project go to the public directory and there use a command  
+To run the project go to the public directory and there use a command  
 ```php -S localhost:8000```
