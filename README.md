@@ -1,10 +1,2 @@
 # codelex-task
-![Screenshot from 2022-12-18 14-43-56](https://user-images.githubusercontent.com/106473441/208299199-f293d2ad-5237-4323-bc3c-90dc9059f0f9.png)
-![Screenshot from 2022-12-18 14-44-08](https://user-images.githubusercontent.com/106473441/208299207-0b86b38b-7643-449b-9f75-ffcd5fa7be6f.png)
-![Screenshot from 2022-12-18 14-44-19](https://user-images.githubusercontent.com/106473441/208299211-90efd743-fcdc-4875-899a-3273c7c0a457.png)
-![Screenshot from 2022-12-18 14-44-34](https://user-images.githubusercontent.com/106473441/208299213-9188740e-c186-40ca-9d41-b6c248218071.png)
-![Screenshot from 2022-12-18 14-44-41](https://user-images.githubusercontent.com/106473441/208299217-a911e4a2-93f7-4ae1-a374-56efe59b19db.png)
-![Screenshot from 2022-12-18 14-44-59](https://user-images.githubusercontent.com/106473441/208299220-df4cb29e-5911-406f-9c36-c1519c80da62.png)
-![Screenshot from 2022-12-18 14-45-16](https://user-images.githubusercontent.com/106473441/208299221-09078d3b-58ea-40a2-a621-7d5cd2161dcd.png)
-![Screenshot from 2022-12-18 14-45-25](https://user-images.githubusercontent.com/106473441/208299223-8f76dd21-c7ef-441c-838f-8ba17244e498.png)
-![Screenshot from 2022-12-18 14-45-38](https://user-images.githubusercontent.com/106473441/208299225-06639d55-5f2c-444d-a3e9-82a5a93cdaae.png)
+![sell_buy](https://user-images.githubusercontent.com/106473441/209431918-6e75edac-4cc8-4517-8b78-956991ae76c1.gif)
