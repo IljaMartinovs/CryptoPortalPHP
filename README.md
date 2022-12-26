@@ -21,7 +21,7 @@ Cryptocurrency platform where you can :
 * nikic/fast-route: 1.3
 * twig/twig: 3.4
 * doctrine/dbal: 3.5
-* guzzlehttp/guzzle: 7.0,
+* guzzlehttp/guzzle: 7.0
 * php-di/php-di: 6.4
 ## Setup the project
 1. Clone this repository - git clone https://github.com/IljaMartinovs/CryptoPortalPHP
